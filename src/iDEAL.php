@@ -2,16 +2,12 @@
 
 namespace POM\iDeal;
 
-use DateTime;
+use OpenSSLAsymmetricKey;
+use POM\iDeal\Requests\Aqcuirer\AccessTokenRequest;
 
 class iDEAL
 {
     private string $bankBaseUrl;
-    private string $merchantId;
-
-    private string $hubToken;
-
-    private DateTime $validUntil;
 
     const PROD_URL = 'https://merchant-cpsp-mtls.idealapi.nl/v2';
     const TEST_URL = 'https://merchant-cpsp-mtls.ext.idealapi.nl/v2';
@@ -24,12 +20,13 @@ class iDEAL
      * @param bool $sandbox
      */
     public function __construct(
-        string  $merchantId,
+        private string  $merchantId,
         Bank    $bank,
-    )
-    {
+        private string $signingCertificate,
+        private string $signingKey,
+        private string $signingAlgorithm
+    ) {
         $this->bankBaseUrl = $bank->value;
-        $this->merchantId = $merchantId;
     }
 
     /**
@@ -48,36 +45,33 @@ class iDEAL
         return $this->bankBaseUrl;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getValidUntil(): DateTime
+    public function createAccessTokenRequest(
+        string $mtlsCertificatePath,
+        string $mtlsKeyPath,
+        string $mtlsPassPhrase,
+        string $signingCertificate,
+        OpenSSLAsymmetricKey $signingKey,
+        string $accessTokenId
+    ): AccessTokenRequest
     {
-        return $this->validUntil;
+        return new AccessTokenRequest(
+            $this,
+            $mtlsCertificatePath,
+            $mtlsKeyPath,
+            $mtlsPassPhrase,
+            $signingCertificate,
+            $signingKey,
+            $accessTokenId
+        );
     }
 
-    /**
-     * @param DateTime $validUntil
-     */
-    public function setValidUntil(DateTime $validUntil): void
+    public function getSigningAlgorithm(): string
     {
-        $this->validUntil = $validUntil;
+        return $this->signingAlgorithm;
     }
 
-    /**
-     * @return string
-     */
-    public function getHubToken(): string
+    public function getSigningCertificate(): string
     {
-        return $this->hubToken;
-    }
-
-    /**
-     * @param $hubToken
-     * @return void
-     */
-    public function setHubToken($hubToken): void
-    {
-        $this->hubToken = $hubToken;
+        return $this->signingCertificate;
     }
 }
