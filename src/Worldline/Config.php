@@ -8,6 +8,9 @@ readonly class Config
         private string $merchantId,
         private bool $testMode,
         private string $baseUrl,
+        private string $bankCertificate,
+        private string $bankKey,
+        private string $tppCertificate,
     )
     {
     }
@@ -32,4 +35,29 @@ readonly class Config
     {
         return $this->baseUrl;
     }
+
+    /**
+     * @return string
+     */
+    public function getBankCertificate(): string
+    {
+        return $this->bankCertificate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBankKey(): string
+    {
+        return $this->bankKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTppCertificate(): string
+    {
+        return $this->tppCertificate;
+    }
+
 }
