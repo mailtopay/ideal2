@@ -1,51 +1,67 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace POM\iDeal\Resources;
+namespace POM\iDEAL\Resources;
 
 use Firebase\JWT\JWT;
-use POM\iDeal\iDEAL;
+use OpenSSLAsymmetricKey;
+use OpenSSLCertificate;
+use POM\iDEAL\SigningAlgorithm;
 
 class HubSignature
 {
     private array $headers;
     public function __construct(
-        private readonly iDEAL $iDEAL,
-        private readonly \OpenSSLAsymmetricKey $signingKey,
-        private string $signingCertificate,
-        string $tokenRequestId
+        string $signingCertificate,
+        private readonly OpenSSLAsymmetricKey|OpenSSLCertificate|string $signingKey,
+        private readonly SigningAlgorithm $signingAlgorithm,
+        string $merchantId,
+        string $tokenRequestId,
+        string $requestId
     ) {
-        var_dump($this->calculateDigest());
-
         $this->headers = [
             'typ' => 'jose+json',
-            'x5c' => [$this->calculateDigest()],
-            'alg' => 'ES256',
-            'https://idealapi.nl/sub' => $this->iDEAL->getMerchantId(),
-            'https://idealapi.nl/iss' => $this->iDEAL->getMerchantId(),
+            'x5c' => [base64_encode($signingCertificate)],
+            'alg' => $signingAlgorithm->value,
+            'https://idealapi.nl/sub' => $merchantId,
+            'https://idealapi.nl/iss' => $merchantId,
             'https://idealapi.nl/scope' => 'MERCHANT',
-            'https://idealapi.nl/acq' => substr($this->iDEAL->getMerchantId(),0, 4),
+            'https://idealapi.nl/acq' => substr($merchantId, 0, 4),
             'https://idealapi.nl/iat' => date('Y-m-d\TH:i:s.000\Z'),
-            'https://idealapi.nl/jti' => '3bdf6416-db1c-4d0f-80fb-e3a948122780',
+            'https://idealapi.nl/jti' => $requestId,
             'https://idealapi.nl/token-jti' => $tokenRequestId,
-            'crit' => ["https://idealapi.nl/sub", "https://idealapi.nl/iss", "https://idealapi.nl/acq", "https://idealapi.nl/iat", "https://idealapi.nl/jti", "https://idealapi.nl/path", "https://idealapi.nl/scope", "https://idealapi.nl/token-jti"],
+            'crit' => [
+                "https://idealapi.nl/sub",
+                "https://idealapi.nl/iss",
+                "https://idealapi.nl/acq",
+                "https://idealapi.nl/iat",
+                "https://idealapi.nl/jti",
+                "https://idealapi.nl/path",
+                "https://idealapi.nl/scope",
+                "https://idealapi.nl/token-jti"
+            ],
         ];
     }
 
+    /**
+     * Get a detached JWT from the request
+     *
+     * @param array $payload
+     * @param string $path
+     * @return string
+     */
     public function getSignature(array $payload, string $path): string
     {
+        // add the path to the headers array
         $headers = $this->headers;
 
         $headers['https://idealapi.nl/path'] = $path;
 
-        $jwt = JWT::encode($payload, $this->signingKey, 'ES256', null, $headers);
+        // create the JWT
+        $jwt = JWT::encode($payload, $this->signingKey, $this->signingAlgorithm->value, null, $headers);
 
+        // remove the payload from the JWT to create a detached JWT
         $jwt = explode('.', $jwt);
 
         return $jwt[0] . '..' . $jwt[2];
-    }
-
-    private function calculateDigest(): string
-    {
-        return base64_encode($this->signingCertificate);
     }
 }

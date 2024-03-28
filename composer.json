@@ -1,7 +1,7 @@
 {
     "autoload": {
         "psr-4": {
-            "POM\\iDeal\\": "src"
+            "POM\\iDEAL\\": "src"
         }
     },
     "require": {

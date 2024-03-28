@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace POM\iDeal\Resources;
+namespace POM\iDEAL\Resources;
 
-use POM\iDeal\iDEAL;
+use POM\iDEAL\iDEAL;
 use GuzzleHttp\Client;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Psr7\Request;
@@ -14,8 +14,6 @@ use DateInterval;
  */
 readonly class AccessToken
 {
-    /**
-     */
     public function __construct(
         private string $token,
         private DateTime $expire,

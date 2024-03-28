@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace POM\iDeal\Helpers;
+namespace POM\iDEAL\Helpers;
 
 class Encode
 {
@@ -8,7 +8,7 @@ class Encode
      * @param string $data
      * @return bool|string
      */
-    public function base64UrlEncode(string $data) : bool|string
+    public static function base64UrlEncode(string $data): bool|string
     {
         $b64 = base64_encode($data);
 

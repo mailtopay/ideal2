@@ -1,16 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace POM\iDeal;
+namespace POM\iDEAL;
 
-use OpenSSLAsymmetricKey;
-use POM\iDeal\Requests\Aqcuirer\AccessTokenRequest;
+use POM\iDEAL\Requests\Aqcuirer\AccessTokenRequest;
+use POM\iDEAL\Requests\Hub\TransactionRequest;
+use POM\iDEAL\Resources\AccessToken;
 
 class iDEAL
 {
-    private string $bankBaseUrl;
-
-    const PROD_URL = 'https://merchant-cpsp-mtls.idealapi.nl/v2';
-    const TEST_URL = 'https://merchant-cpsp-mtls.ext.idealapi.nl/v2';
+    private AccessToken $accessToken;
 
     /**
      * @param string $merchantId
@@ -19,59 +17,29 @@ class iDEAL
      * @param string $privateKeyFilePath
      * @param bool $sandbox
      */
-    public function __construct(
-        private string  $merchantId,
-        Bank    $bank,
-        private string $signingCertificate,
-        private string $signingKey,
-        private string $signingAlgorithm
-    ) {
-        $this->bankBaseUrl = $bank->value;
+    public function __construct(private readonly Config|INGConfig $config)
+    {
     }
 
-    /**
-     * @return string
-     */
-    public function getMerchantId(): string
+    public function createAccessTokenRequest(): AccessTokenRequest
     {
-        return $this->merchantId;
+        return new AccessTokenRequest($this);
     }
 
-    /**
-     * @return string
-     */
-    public function getBankBaseUrl(): string
+    public function createTransactionRequest(AccessToken $accessToken, string $requestId): TransactionRequest
     {
-        return $this->bankBaseUrl;
-    }
-
-    public function createAccessTokenRequest(
-        string $mtlsCertificatePath,
-        string $mtlsKeyPath,
-        string $mtlsPassPhrase,
-        string $signingCertificate,
-        OpenSSLAsymmetricKey $signingKey,
-        string $accessTokenId
-    ): AccessTokenRequest
-    {
-        return new AccessTokenRequest(
+        return new TransactionRequest(
             $this,
-            $mtlsCertificatePath,
-            $mtlsKeyPath,
-            $mtlsPassPhrase,
-            $signingCertificate,
-            $signingKey,
-            $accessTokenId
+            $accessToken,
+            $requestId
         );
     }
 
-    public function getSigningAlgorithm(): string
+    /**
+     * @return Config|INGConfig
+     */
+    public function getConfig(): Config|INGConfig
     {
-        return $this->signingAlgorithm;
-    }
-
-    public function getSigningCertificate(): string
-    {
-        return $this->signingCertificate;
+        return $this->config;
     }
 }
