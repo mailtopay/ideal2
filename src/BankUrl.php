@@ -2,7 +2,7 @@
 
 namespace POM\iDEAL;
 
-enum Bank: string
+enum BankUrl: string
 {
     case ING = 'https://api.ideal-acquiring.ing.nl';
     case RABO = 'https://ideal.rabobank.nl';

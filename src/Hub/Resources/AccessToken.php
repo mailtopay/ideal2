@@ -1,13 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL\Resources;
+namespace POM\iDEAL\Hub\Resources;
 
-use POM\iDEAL\iDEAL;
-use GuzzleHttp\Client;
-use Firebase\JWT\JWT;
-use GuzzleHttp\Psr7\Request;
 use DateTime;
-use DateInterval;
 
 /**
  *

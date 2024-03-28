@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL\Requests\Hub;
+namespace POM\iDEAL\Hub\Requests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use POM\iDEAL\iDEAL;
-use POM\iDEAL\Resources\AccessToken;
-use POM\iDEAL\Resources\HubSignature;
-use POM\iDEAL\Resources\TransactionResponse;
+use POM\iDEAL\Hub\iDEAL;
+use POM\iDEAL\Hub\Resources\AccessToken;
+use POM\iDEAL\Hub\Resources\HubSignature;
+use POM\iDEAL\Hub\Resources\TransactionResponse;
 
 readonly class TransactionRequest
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL\Requests\Acquirer;
+namespace POM\iDEAL\Hub\Requests;
 
 use DateInterval;
 use DateTime;
@@ -8,8 +8,8 @@ use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use POM\iDEAL\Helpers\Encode;
-use POM\iDEAL\iDEAL;
-use POM\iDEAL\Resources\AccessToken;
+use POM\iDEAL\Hub\iDEAL;
+use POM\iDEAL\Hub\Resources\AccessToken;
 
 readonly class AccessTokenRequest
 {
@@ -40,7 +40,7 @@ readonly class AccessTokenRequest
             'ssl_key'   => [$this->iDEAL->getConfig()->getINGmTLSKeyPath(), $this->iDEAL->getConfig()->getINGmTLSPassPhrase()],
         ];
 
-        $request  = new Request('POST', $this->iDEAL->getConfig()->getINGBaseUrl() . '/ideal2/merchanttoken', $headers);
+        $request  = new Request('POST', $this->iDEAL->getConfig()->getAcquirerBaseUrl() . '/ideal2/merchanttoken', $headers);
 
         $response = $client->send($request, $options);
 
@@ -83,7 +83,7 @@ readonly class AccessTokenRequest
         $payload = [
             "iss" => $this->iDEAL->getConfig()->getMerchantId(),
             "sub" => $this->iDEAL->getConfig()->getMerchantId(),
-            "aud" => $this->iDEAL->getConfig()->getINGBaseUrl(),
+            "aud" => $this->iDEAL->getConfig()->getAcquirerBaseUrl(),
             "iat" => time(),
         ];
 

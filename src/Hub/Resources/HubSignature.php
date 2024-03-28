@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL\Resources;
+namespace POM\iDEAL\Hub\Resources;
 
 use Firebase\JWT\JWT;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
-use POM\iDEAL\SigningAlgorithm;
+use POM\iDEAL\Hub\SigningAlgorithm;
 
 class HubSignature
 {

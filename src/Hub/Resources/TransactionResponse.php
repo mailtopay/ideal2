@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL\Resources;
+namespace POM\iDEAL\Hub\Resources;
 
 use DateTime;
 

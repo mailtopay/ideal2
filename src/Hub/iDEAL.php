@@ -1,23 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL;
+namespace POM\iDEAL\Hub;
 
-use POM\iDEAL\Requests\Acquirer\AccessTokenRequest;
-use POM\iDEAL\Requests\Hub\TransactionRequest;
-use POM\iDEAL\Resources\AccessToken;
+use POM\iDEAL\Hub\Requests\AccessTokenRequest;
+use POM\iDEAL\Hub\Requests\TransactionRequest;
+use POM\iDEAL\Hub\Resources\AccessToken;
 
 class iDEAL
 {
     private AccessToken $accessToken;
 
     /**
-     * @param string $merchantId
-     * @param Bank $bank,
-     * @param string $certificateFilePath
-     * @param string $privateKeyFilePath
-     * @param bool $sandbox
+     * @param Config $config
      */
-    public function __construct(private readonly Config|INGConfig $config)
+    public function __construct(private readonly Config $config)
     {
     }
 
@@ -36,9 +32,9 @@ class iDEAL
     }
 
     /**
-     * @return Config|INGConfig
+     * @return Config
      */
-    public function getConfig(): Config|INGConfig
+    public function getConfig(): Config
     {
         return $this->config;
     }

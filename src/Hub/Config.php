@@ -1,15 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL;
+namespace POM\iDEAL\Hub;
 
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
+use POM\iDEAL\BankUrl;
 
-readonly class INGConfig
+readonly class Config
 {
+    private string $hubBaseUrl;
+
     /**
      * @param string $merchantId
      * @param bool $testMode
+     * @param string $INGBaseUrl
      * @param string $INGmTLSCertificatePath
      * @param string $INGmTLSKeyPath
      * @param string $INGmTLSPassPhrase
@@ -26,8 +30,7 @@ readonly class INGConfig
     public function __construct(
         private string $merchantId,
         private bool $testMode,
-        private string $INGBaseUrl,
-        private string $hubBaseUrl,
+        private BankUrl $bankUrl,
         private string $INGmTLSCertificatePath,
         private string $INGmTLSKeyPath,
         private string $INGmTLSPassPhrase,
@@ -41,6 +44,11 @@ readonly class INGConfig
         private string $hubSigningPassphrase,
         private SigningAlgorithm $signingAlgorithm,
     ) {
+        if ($this->testMode) {
+            $this->hubBaseUrl = 'https://merchant-cpsp-mtls.ext.idealapi.nl';
+        } else {
+            $this->hubBaseUrl = 'https://merchant-cpsp-mtls.idealapi.nl';
+        }
     }
 
     /**
@@ -152,9 +160,9 @@ readonly class INGConfig
         return $this->hubSigningPassphrase;
     }
 
-    public function getINGBaseUrl(): string
+    public function getAcquirerBaseUrl(): string
     {
-        return $this->INGBaseUrl;
+        return $this->bankUrl->value;
     }
 
     public function getHubBaseUrl(): string
