@@ -2,7 +2,7 @@
 
 namespace POM\iDEAL;
 
-use POM\iDEAL\Requests\Aqcuirer\AccessTokenRequest;
+use POM\iDEAL\Requests\Acquirer\AccessTokenRequest;
 use POM\iDEAL\Requests\Hub\TransactionRequest;
 use POM\iDEAL\Resources\AccessToken;
 

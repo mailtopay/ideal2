@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL\Requests\Aqcuirer;
+namespace POM\iDEAL\Requests\Acquirer;
 
 use DateInterval;
 use DateTime;
