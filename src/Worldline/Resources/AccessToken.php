@@ -12,7 +12,6 @@ readonly class AccessToken
     public function __construct(
         private string $token,
         private DateTime $expire,
-        private string $id
     ) {
     }
 
@@ -30,14 +29,6 @@ readonly class AccessToken
     public function getExpire(): DateTime
     {
         return $this->expire;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId(): string
-    {
-        return $this->id;
     }
 
 }

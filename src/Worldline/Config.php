@@ -2,6 +2,8 @@
 
 namespace POM\iDEAL\Worldline;
 
+use POM\iDEAL\Banks\BankBase;
+
 readonly class Config
 {
     public function __construct(
@@ -11,6 +13,7 @@ readonly class Config
         private string $bankCertificate,
         private string $bankKey,
         private string $tppCertificate,
+        private BankBase $bank,
     )
     {
     }
@@ -59,5 +62,14 @@ readonly class Config
     {
         return $this->tppCertificate;
     }
+
+    /**
+     * @return BankBase
+     */
+    public function getBank(): BankBase
+    {
+        return $this->bank;
+    }
+
 
 }

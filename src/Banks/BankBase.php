@@ -8,6 +8,12 @@ class BankBase
      * @var string
      */
     private string $client;
+
+    /**
+     * @var string
+     */
+    private string $app;
+
     /**
      * @var string
      */
@@ -30,6 +36,14 @@ class BankBase
     }
 
     /**
+     * @return string
+     */
+    public function getApp(): string
+    {
+        return $this->app;
+    }
+
+    /**
      * @param string $client
      */
     public function setClient(string $client): void
@@ -45,4 +59,11 @@ class BankBase
         $this->baseUrl = $baseUrl;
     }
 
+    /**
+     * @param string $app
+     */
+    public function setApp(string $app): void
+    {
+        $this->app = $app;
+    }
 }
