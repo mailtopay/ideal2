@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL\Wordline\Requests;
+namespace POM\iDEAL\Worldline\Requests;
 
 use DateInterval;
 use DateTime;
 use DateTimeZone;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use POM\iDEAL\Wordline\Resources\AccessSignature;
 use POM\iDEAL\Wordline\iDEAL;
-use POM\iDEAL\Wordline\Resources\AccessToken;
+use POM\iDEAL\Worldline\Resources\AccessSignature;
+use POM\iDEAL\Worldline\Resources\AccessToken;
 
 readonly class AccessTokenRequest
 {

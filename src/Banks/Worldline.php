@@ -2,7 +2,7 @@
 
 namespace POM\iDEAL\Banks;
 
-final class Wordline extends BankBase
+final class Worldline extends BankBase
 {
     public function __construct()
     {

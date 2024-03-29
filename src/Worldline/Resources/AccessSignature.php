@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL\Wordline\Resources;
+namespace POM\iDEAL\Worldline\Resources;
 
 use DateTime;
-use POM\iDEAL\Wordline\iDEAL;
+use POM\iDEAL\Worldline\iDEAL;
 
 class AccessSignature
 {

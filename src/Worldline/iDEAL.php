@@ -2,10 +2,10 @@
 
 namespace POM\iDEAL\Wordline;
 
-use POM\iDEAL\Wordline\Requests\AccessTokenRequest;
-use POM\iDEAL\Wordline\Requests\TransactionRequest;
-use POM\iDEAL\Wordline\Resources\AccessToken;
 use POM\iDEAL\Worldline\Config;
+use POM\iDEAL\Worldline\Requests\AccessTokenRequest;
+use POM\iDEAL\Worldline\Requests\TransactionRequest;
+use POM\iDEAL\Worldline\Resources\AccessToken;
 
 class iDEAL
 {

@@ -9,7 +9,6 @@ readonly class Config
     public function __construct(
         private string $merchantId,
         private bool $testMode,
-        private string $baseUrl,
         private string $bankCertificate,
         private string $bankKey,
         private string $tppCertificate,
@@ -36,7 +35,7 @@ readonly class Config
 
     public function getBaseUrl(): string
     {
-        return $this->baseUrl;
+        return $this->bank->getBaseUrl();
     }
 
     /**
