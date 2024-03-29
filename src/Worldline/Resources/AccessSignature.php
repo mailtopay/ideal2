@@ -39,7 +39,11 @@ class AccessSignature
             $headerPieces[] = $name . ': ' . $value;
         }
 
-        $result = openssl_sign(implode("\n", $headerPieces), $signature, $privateKey, 'sha256WithRSAEncryption');
+        $headerPieces = implode("\n", $headerPieces);
+
+        $stringToSign = $headerPieces;
+
+        $result = openssl_sign($stringToSign, $signature, $privateKey, 'sha256WithRSAEncryption');
 
         if (false === $result) {
             throw new \Exception('Could not sign: ' . esc_html((string) openssl_error_string()));
@@ -48,7 +52,7 @@ class AccessSignature
         $signatureResult =  sprintf(
             'Signature keyId="%s", algorithm="SHA256withRSA", headers="%s", signature="%s"',
             openssl_x509_fingerprint(file_get_contents($this->iDEAL->getConfig()->getBankCertificate())),
-            implode(' ', array_keys($headerPieces)),
+            implode(' ', array_keys($this->headers)),
             base64_encode($signature)
         );
 

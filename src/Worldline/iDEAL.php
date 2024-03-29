@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace POM\iDEAL\Wordline;
+namespace POM\iDEAL\Worldline;
 
 use POM\iDEAL\Worldline\Config;
 use POM\iDEAL\Worldline\Requests\AccessTokenRequest;

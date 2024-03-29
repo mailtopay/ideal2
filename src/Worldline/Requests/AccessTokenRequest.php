@@ -7,7 +7,7 @@ use DateTime;
 use DateTimeZone;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use POM\iDEAL\Wordline\iDEAL;
+use POM\iDEAL\Worldline\iDEAL;
 use POM\iDEAL\Worldline\Resources\AccessSignature;
 use POM\iDEAL\Worldline\Resources\AccessToken;
 
