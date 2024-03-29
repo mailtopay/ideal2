@@ -25,7 +25,7 @@ readonly class TransactionRequest
     public function __construct(private iDEAL $iDEAL, private AccessToken $accessToken)
     {
         $this->signingKey = openssl_pkey_get_private(
-            file_get_contents($this->iDEAL->getConfig()->getBankKey()),
+            $this->iDEAL->getConfig()->getBankKey(),
             ''
         );
     }

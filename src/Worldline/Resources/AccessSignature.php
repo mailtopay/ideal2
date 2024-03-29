@@ -27,7 +27,7 @@ class AccessSignature
      */
     public function getSignature(): string
     {
-        $privateKey = openssl_pkey_get_private(file_get_contents($this->iDEAL->getConfig()->getBankKey()), '');
+        $privateKey = openssl_pkey_get_private($this->iDEAL->getConfig()->getBankKey(), '');
 
         if (false === $privateKey) {
             throw new \Exception('Could not get private key: ' . esc_html((string) openssl_error_string()));
@@ -51,7 +51,7 @@ class AccessSignature
 
         $signatureResult =  sprintf(
             'Signature keyId="%s", algorithm="SHA256withRSA", headers="%s", signature="%s"',
-            openssl_x509_fingerprint(file_get_contents($this->iDEAL->getConfig()->getBankCertificate())),
+            openssl_x509_fingerprint($this->iDEAL->getConfig()->getBankCertificate()),
             implode(' ', array_keys($this->headers)),
             base64_encode($signature)
         );
