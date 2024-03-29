@@ -41,9 +41,9 @@ readonly class TransactionResponse
     public static function fromArray(array $data): self
     {
         return new self(
-            $data['transactionId'],
-            new DateTime($data['expiryDateTimestamp']),
-            $data['links']['redirectUrl']['href'],
+            $data['CommonPaymentData']['PaymentId'],
+            new DateTime($data['CommonPaymentData']['ExpiryDateTimestamp']),
+            $data['Links']['RedirectUrl']['Href'],
         );
     }
 }
