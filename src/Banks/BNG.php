@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace POM\iDEAL\Banks;
 
-final class BNG extends BankBase
+final class BNG extends BankBase implements BankInterface
 {
     public function __construct()
     {

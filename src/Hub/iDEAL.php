@@ -8,7 +8,6 @@ use POM\iDEAL\Hub\Resources\AccessToken;
 
 class iDEAL
 {
-    private AccessToken $accessToken;
 
     /**
      * @param Config $config

@@ -4,7 +4,7 @@ namespace POM\iDEAL\Hub;
 
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
-use POM\iDEAL\BankUrl;
+use POM\iDEAL\Banks\BankInterface;
 
 readonly class Config
 {
@@ -30,7 +30,7 @@ readonly class Config
     public function __construct(
         private string $merchantId,
         private bool $testMode,
-        private BankUrl $bankUrl,
+        private BankInterface $bank,
         private string $INGmTLSCertificatePath,
         private string $INGmTLSKeyPath,
         private string $INGmTLSPassPhrase,
@@ -162,7 +162,7 @@ readonly class Config
 
     public function getAcquirerBaseUrl(): string
     {
-        return $this->bankUrl->value;
+        return $this->bank->getBaseUrl();
     }
 
     public function getHubBaseUrl(): string

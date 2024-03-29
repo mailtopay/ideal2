@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace POM\iDEAL\Banks;
 
-final class Worldline extends BankBase
+final class Worldline extends BankBase implements BankInterface
 {
     public function __construct()
     {

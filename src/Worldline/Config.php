@@ -2,7 +2,7 @@
 
 namespace POM\iDEAL\Worldline;
 
-use POM\iDEAL\Banks\BankBase;
+use POM\iDEAL\Banks\BankInterface;
 
 readonly class Config
 {
@@ -12,7 +12,7 @@ readonly class Config
         private string $bankCertificate,
         private string $bankKey,
         private string $tppCertificate,
-        private BankBase $bank,
+        private BankInterface $bank,
     )
     {
     }
@@ -63,12 +63,11 @@ readonly class Config
     }
 
     /**
-     * @return BankBase
+     * @return BankInterface
      */
-    public function getBank(): BankBase
+    public function getBank(): BankInterface
     {
         return $this->bank;
     }
-
 
 }

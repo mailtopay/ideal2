@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace POM\iDEAL\Banks;
 
-class BankBase
+class BankBase implements BankInterface
 {
     /**
      * @var string
