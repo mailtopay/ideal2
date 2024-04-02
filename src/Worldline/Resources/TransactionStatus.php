@@ -32,8 +32,9 @@
 
 namespace POM\iDEAL\Worldline\Resources;
 
-class PaymentStatus
+class TransactionStatus
 {
+
     public function __construct(
         private string $guaranteedAmount,
         private string $paymentStatus,
@@ -144,6 +145,7 @@ class PaymentStatus
      */
     public static function fromArray(array $data): self
     {
+
         return new self(
             $data['CommonPaymentData']['GuaranteedAmount'],
             $data['CommonPaymentData']['PaymentStatus'],
