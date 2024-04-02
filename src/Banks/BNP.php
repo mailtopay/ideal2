@@ -6,8 +6,8 @@ final class BNP extends BankBase implements BankInterface
 {
     public function __construct()
     {
-        $this->setClient('');
+        $this->setClient('BnppNL');
         $this->setApp('IDEAL');
-        $this->setBaseUrl('');
+        $this->setBaseUrl('https://ecommerce.bnpparibas.com');
     }
 }

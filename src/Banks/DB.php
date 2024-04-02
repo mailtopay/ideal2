@@ -6,8 +6,8 @@ final class DB extends BankBase implements BankInterface
 {
     public function __construct()
     {
-        $this->setClient('');
+        $this->setClient('DeubaNL');
         $this->setApp('IDEAL');
-        $this->setBaseUrl('');
+        $this->setBaseUrl('https://myideal.db.com');
     }
 }
