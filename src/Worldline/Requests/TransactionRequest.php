@@ -14,8 +14,6 @@ use Ramsey\Uuid\Uuid;
 
 readonly class TransactionRequest
 {
-    private RequestSignature $requestSignature;
-
     private \OpenSSLAsymmetricKey $signingKey;
 
     /**
@@ -30,7 +28,14 @@ readonly class TransactionRequest
         );
     }
 
-    public function execute(string $amount, string $reference): TransactionResponse
+    /**
+     * @param string $amount
+     * @param string $reference
+     * @param string $returnUrl
+     * @return TransactionResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function execute(string $amount, string $reference, string $returnUrl): TransactionResponse
     {
         $client = new Client();
 
@@ -75,6 +80,7 @@ readonly class TransactionRequest
             'Authorization' => 'Bearer ' . $this->accessToken->getToken(),
             'Content-Type' => 'application/json',
             'Signature' => $requestSignature->getSignature(),
+            'InitiatingPartyNotificationUrl' => $returnUrl,
         ];
 
         $request = new Request(
