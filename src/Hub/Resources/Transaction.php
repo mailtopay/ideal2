@@ -3,8 +3,9 @@
 namespace POM\iDEAL\Hub\Resources;
 
 use DateTime;
+use POM\iDEAL\Hub\TransactionStatus;
 
-readonly class TransactionResponse
+readonly class Transaction
 {
     public function __construct(
         private string $transactionId,
@@ -15,9 +16,9 @@ readonly class TransactionResponse
         private string $transactionType,
         private string $transactionFlow,
         private int $amount,
-        private string $redirectUrl,
-    )
-    {
+        private ?string $redirectUrl,
+        private TransactionStatus $status,
+    ) {
     }
 
     /**
@@ -103,7 +104,13 @@ readonly class TransactionResponse
             $data['transactionType'],
             $data['transactionFlow'],
             $data['amount']['amount'],
-            $data['links']['redirectUrl']['href'],
+            $data['links']['redirectUrl']['href'] ?? null,
+            TransactionStatus::from($data['status'] ?? 'OPEN'),
         );
+    }
+
+    public function getStatus(): TransactionStatus
+    {
+        return $this->status;
     }
 }

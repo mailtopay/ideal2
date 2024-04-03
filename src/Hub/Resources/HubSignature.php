@@ -7,13 +7,13 @@ use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 use POM\iDEAL\Hub\SigningAlgorithm;
 
-class HubSignature
+readonly class HubSignature
 {
     private array $headers;
     public function __construct(
         string $signingCertificate,
-        private readonly OpenSSLAsymmetricKey|OpenSSLCertificate|string $signingKey,
-        private readonly SigningAlgorithm $signingAlgorithm,
+        private OpenSSLAsymmetricKey|OpenSSLCertificate|string $signingKey,
+        private SigningAlgorithm $signingAlgorithm,
         string $merchantId,
         string $tokenRequestId,
         string $requestId
@@ -49,19 +49,34 @@ class HubSignature
      * @param string $path
      * @return string
      */
-    public function getSignature(array $payload, string $path): string
+    public function getSignature(string|array $payload, string $path): string
     {
         // add the path to the headers array
         $headers = $this->headers;
 
         $headers['https://idealapi.nl/path'] = $path;
 
-        // create the JWT
-        $jwt = JWT::encode($payload, $this->signingKey, $this->signingAlgorithm->value, null, $headers);
+        // create the JWT, not using the library because of non-standard working of ideal hub
+        $header = ['typ' => 'JWT'];
+        $header = array_merge($header, $headers);
+        $header['alg'] = $this->signingAlgorithm->value;
 
-        // remove the payload from the JWT to create a detached JWT
-        $jwt = explode('.', $jwt);
+        $segments = [];
+        $segments[] = JWT::urlsafeB64Encode(JWT::jsonEncode($header));
 
-        return $jwt[0] . '..' . $jwt[2];
+        if (is_array($payload)) {
+            $payload = JWT::jsonEncode($payload);
+        }
+
+        $segments[] = JWT::urlsafeB64Encode($payload);
+
+        $signing_input = implode('.', $segments);
+
+        $signature = JWT::sign($signing_input, $this->signingKey, $this->signingAlgorithm->value);
+        $segments[] = JWT::urlsafeB64Encode($signature);
+
+        $segments[1] = '';
+
+        return implode('.', $segments);
     }
 }

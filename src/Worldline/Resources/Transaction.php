@@ -4,7 +4,7 @@ namespace POM\iDEAL\Worldline\Resources;
 
 use DateTime;
 
-readonly class TransactionResponse
+readonly class Transaction
 {
     public function __construct(
         private string $transactionId,

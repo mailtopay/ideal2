@@ -8,7 +8,7 @@ use GuzzleHttp\Psr7\Request;
 use POM\iDEAL\Worldline\iDEAL;
 use POM\iDEAL\Worldline\Resources\AccessToken;
 use POM\iDEAL\Worldline\Resources\RequestSignature;
-use POM\iDEAL\Worldline\Resources\TransactionResponse;
+use POM\iDEAL\Worldline\Resources\Transaction;
 use Ramsey\Uuid\Uuid;
 
 readonly class TransactionRequest
@@ -25,10 +25,10 @@ readonly class TransactionRequest
      * @param string $amount
      * @param string $reference
      * @param string $returnUrl
-     * @return TransactionResponse
+     * @return Transaction
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function execute(int $amount, string $reference, string $returnUrl): TransactionResponse
+    public function execute(int $amount, string $reference, string $returnUrl): Transaction
     {
         $amount = number_format($amount / 100, 2, '.', '');
         $client = new Client();
@@ -91,6 +91,6 @@ readonly class TransactionRequest
         $response = $client->send($request);
         $data = json_decode($response->getBody()->getContents(), true);
 
-        return TransactionResponse::fromArray($data);
+        return Transaction::fromArray($data);
     }
 }
