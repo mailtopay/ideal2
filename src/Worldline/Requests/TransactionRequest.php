@@ -3,7 +3,6 @@
 namespace POM\iDEAL\Worldline\Requests;
 
 use DateTime;
-use DateTimeZone;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use POM\iDEAL\Worldline\iDEAL;
@@ -29,8 +28,9 @@ readonly class TransactionRequest
      * @return TransactionResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function execute(string $amount, string $reference, string $returnUrl): TransactionResponse
+    public function execute(int $amount, string $reference, string $returnUrl): TransactionResponse
     {
+        $amount = number_format($amount / 100, 2, '.', '');
         $client = new Client();
 
         $endpoint = '/xs2a/routingservice/services/ob/pis/v3/payments';

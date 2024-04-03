@@ -4,7 +4,9 @@ namespace POM\iDEAL\Worldline;
 
 use POM\iDEAL\Worldline\Requests\AccessTokenRequest;
 use POM\iDEAL\Worldline\Requests\TransactionRequest;
+use POM\iDEAL\Worldline\Requests\TransactionStatusRequest;
 use POM\iDEAL\Worldline\Resources\AccessToken;
+use POM\iDEAL\Worldline\Resources\TransactionStatus;
 
 readonly class iDEAL
 {
@@ -23,6 +25,14 @@ readonly class iDEAL
     public function createTransactionRequest(AccessToken $accessToken): TransactionRequest
     {
         return new TransactionRequest(
+            $this,
+            $accessToken
+        );
+    }
+
+    public function doStatusRequest(AccessToken $accessToken): TransactionStatusRequest
+    {
+        return new TransactionStatusRequest(
             $this,
             $accessToken
         );

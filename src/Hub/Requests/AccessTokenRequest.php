@@ -46,11 +46,7 @@ readonly class AccessTokenRequest
 
         $responseBody = $response->getBody()->getContents();
 
-//        var_dump($responseBody);
-//        var_dump($response->getHeaders());
-//
         $response = json_decode($responseBody);
-//        var_dump($response);
 
         $expireDateTime = new DateTime();
         $expireDateTime->add(new DateInterval('PT' . $response->expires_in . 'S'));

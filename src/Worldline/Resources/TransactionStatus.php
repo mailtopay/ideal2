@@ -36,17 +36,17 @@ readonly class TransactionStatus
 {
 
     public function __construct(
-        private string $guaranteedAmount,
+        private ?string $guaranteedAmount,
         private string $paymentStatus,
         private int $paymentId,
-        private string $name,
-        private string $agent,
-        private string $identification,
-        private string $firstname,
-        private string $lastname,
-        private string $phonenumber,
-        private string $email,
-        private bool $useWaitingScreen,
+        private ?string $name,
+        private ?string $agent,
+        private ?string $identification,
+        private ?string $firstname,
+        private ?string $lastname,
+        private ?string $phonenumber,
+        private ?string $email,
+        private ?bool $useWaitingScreen,
     )
     {
     }
@@ -145,9 +145,8 @@ readonly class TransactionStatus
      */
     public static function fromArray(array $data): self
     {
-
         return new self(
-            $data['CommonPaymentData']['GuaranteedAmount'],
+            $data['CommonPaymentData']['GuaranteedAmount'] ?? NULL,
             $data['CommonPaymentData']['PaymentStatus'],
             $data['CommonPaymentData']['PaymentId'],
             $data['CommonPaymentData']['DebtorInformation']['Name'] ?? NULL,

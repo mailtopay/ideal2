@@ -18,12 +18,16 @@ class RequestSignature
         string $httpMethod,
         string $endpoint,
     ) {
+
         $this->headers = [
-            'digest' => $encodedBody,
             'x-request-id' => $uuid->toString(),
             'messagecreatedatetime' => $dateTime->format(DATE_ATOM),
             '(request-target)' => strtolower($httpMethod) . ' ' . strtolower($endpoint),
         ];
+
+        if (!empty($encodedBody)) {
+            $this->headers['digest'] = $encodedBody;
+        }
     }
 
     /**
