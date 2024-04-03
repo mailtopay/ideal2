@@ -9,12 +9,29 @@ readonly class Config
     public function __construct(
         private string $merchantId,
         private bool $testMode,
-        private string $bankCertificate,
-        private string $bankKey,
-        private string $tppCertificate,
+        private string $merchantCertificate,
+        private string $merchantKey,
+        private string $merchantPassphrase,
+        private string $acquirerCertificate,
         private BankInterface $bank,
     )
     {
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantKey(): string
+    {
+        return $this->merchantKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAcquirerCertificate(): string
+    {
+        return $this->acquirerCertificate;
     }
 
     /**
@@ -39,35 +56,21 @@ readonly class Config
     }
 
     /**
-     * @return string
-     */
-    public function getBankCertificate(): string
-    {
-        return $this->bankCertificate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBankKey(): string
-    {
-        return $this->bankKey;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTppCertificate(): string
-    {
-        return $this->tppCertificate;
-    }
-
-    /**
      * @return BankInterface
      */
     public function getBank(): BankInterface
     {
         return $this->bank;
+    }
+
+    public function getMerchantCertificate(): string
+    {
+        return $this->merchantCertificate;
+    }
+
+    public function getMerchantPassphrase(): string
+    {
+        return $this->merchantPassphrase;
     }
 
 }

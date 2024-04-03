@@ -14,18 +14,12 @@ use Ramsey\Uuid\Uuid;
 
 readonly class TransactionRequest
 {
-    private \OpenSSLAsymmetricKey $signingKey;
-
     /**
      * @param iDEAL $iDEAL
      * @param AccessToken $accessToken
      */
     public function __construct(private iDEAL $iDEAL, private AccessToken $accessToken)
     {
-        $this->signingKey = openssl_pkey_get_private(
-            $this->iDEAL->getConfig()->getBankKey(),
-            ''
-        );
     }
 
     /**
@@ -61,20 +55,24 @@ readonly class TransactionRequest
             ],
         ];
 
-        $dateTime = new DateTime('now', new DateTimeZone('UTC'));
+        $dateTime = new DateTime('now');
 
-        // Get the offset for the specified timezone (here assuming CET/CEST)
-        $timezone = new DateTimeZone('Europe/Paris');
-        $offset = $timezone->getOffset($dateTime);
-        $dateTime->modify('+' . $offset . ' seconds');
-
-        $uuid = Uuid::uuid4();
+        $requestId = Uuid::uuid4();
         $encodedBody = 'SHA-256='.base64_encode(hash('sha256', json_encode($body), true));
-        $requestSignature = new RequestSignature($this->iDEAL, $dateTime, $uuid, $encodedBody, $endpoint);
 
+        $requestSignature = new RequestSignature(
+            $this->iDEAL,
+            $dateTime,
+            $requestId,
+            $encodedBody,
+            'POST',
+            $endpoint
+        );
+
+        // set up the HTTP headers
         $headers = [
             'Digest' => $encodedBody,
-            'X-Request-ID' => $uuid->toString(),
+            'X-Request-ID' => $requestId->toString(),
             'MessageCreateDateTime' => $dateTime->format(DATE_ATOM),
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $this->accessToken->getToken(),

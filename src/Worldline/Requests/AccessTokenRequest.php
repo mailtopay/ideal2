@@ -21,12 +21,7 @@ readonly class AccessTokenRequest
     {
         $client = new Client();
 
-        $dateTime = new DateTime('now', new DateTimeZone('UTC'));
-
-        // Get the offset for the specified timezone (here assuming CET/CEST)
-        $timezone = new DateTimeZone('Europe/Paris');
-        $offset = $timezone->getOffset($dateTime);
-        $dateTime->modify('+' . $offset . ' seconds');
+        $dateTime = new DateTime('now');
         $accessSignature = new AccessSignature($this->iDEAL, $dateTime);
 
         $headers = [

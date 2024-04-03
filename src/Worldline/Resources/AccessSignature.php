@@ -9,8 +9,8 @@ class AccessSignature
 {
     private array $headers;
     public function __construct(
-        private iDEAL $iDEAL,
-        private DateTime $dateTime,
+        private readonly iDEAL $iDEAL,
+        private readonly DateTime $dateTime,
     ) {
         $this->headers = [
             'app' => $this->iDEAL->getConfig()->getBank()->getApp(),
@@ -24,13 +24,14 @@ class AccessSignature
      * Get a signature based on the headers
      *
      * @return string
+     * @throws \Exception
      */
     public function getSignature(): string
     {
-        $privateKey = openssl_pkey_get_private($this->iDEAL->getConfig()->getBankKey(), '');
+        $privateKey = openssl_pkey_get_private($this->iDEAL->getConfig()->getMerchantKey(), $this->iDEAL->getConfig()->getMerchantPassphrase());
 
-        if (false === $privateKey) {
-            throw new \Exception('Could not get private key: ' . esc_html((string) openssl_error_string()));
+        if ($privateKey === false) {
+            throw new \Exception('Could not get private key: ' . openssl_error_string());
         }
 
         $headerPieces = [];
@@ -45,17 +46,15 @@ class AccessSignature
 
         $result = openssl_sign($stringToSign, $signature, $privateKey, 'sha256WithRSAEncryption');
 
-        if (false === $result) {
-            throw new \Exception('Could not sign: ' . esc_html((string) openssl_error_string()));
+        if ($result === false) {
+            throw new \Exception('Could not sign: ' .  openssl_error_string());
         }
 
-        $signatureResult =  sprintf(
+        return sprintf(
             'Signature keyId="%s", algorithm="SHA256withRSA", headers="%s", signature="%s"',
-            openssl_x509_fingerprint($this->iDEAL->getConfig()->getBankCertificate()),
+            openssl_x509_fingerprint($this->iDEAL->getConfig()->getMerchantCertificate()),
             implode(' ', array_keys($this->headers)),
             base64_encode($signature)
         );
-
-        return $signatureResult;
     }
 }
