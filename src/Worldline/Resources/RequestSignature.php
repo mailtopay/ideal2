@@ -5,7 +5,6 @@ namespace POM\iDEAL\Worldline\Resources;
 use DateTime;
 use Exception;
 use POM\iDEAL\Worldline\iDEAL;
-use Ramsey\Uuid\UuidInterface;
 
 class RequestSignature
 {
@@ -13,21 +12,12 @@ class RequestSignature
     public function __construct(
         private readonly iDEAL $iDEAL,
         DateTime $dateTime,
-        UuidInterface $uuid,
-        string $encodedBody,
-        string $httpMethod,
-        string $endpoint,
+        string $requestId,
     ) {
-
         $this->headers = [
-            'x-request-id' => $uuid->toString(),
+            'x-request-id' => $requestId,
             'messagecreatedatetime' => $dateTime->format(DATE_ATOM),
-            '(request-target)' => strtolower($httpMethod) . ' ' . strtolower($endpoint),
         ];
-
-        if (!empty($encodedBody)) {
-            $this->headers['digest'] = $encodedBody;
-        }
     }
 
     /**
@@ -36,7 +26,7 @@ class RequestSignature
      * @return string
      * @throws Exception
      */
-    public function getSignature(): string
+    public function getSignature(string|array $body, string $httpMethod, string $endpoint): string
     {
         $privateKey = openssl_pkey_get_private($this->iDEAL->getConfig()->getMerchantKey(), $this->iDEAL->getConfig()->getMerchantPassphrase());
 
@@ -44,17 +34,26 @@ class RequestSignature
             throw new Exception('Could not get private key: ' . openssl_error_string());
         }
 
+        $headers = [
+            '(request-target)' => strtolower($httpMethod) . ' ' . strtolower($endpoint),
+        ];
+
+        // dont include the digest header for empty body
+        if (!empty($body)) {
+            $headers['digest'] = 'SHA-256='.base64_encode(hash('sha256', json_encode($body), true));
+        }
+
+        $headers = array_merge($this->headers, $headers);
+
         $headerPieces = [];
 
-        foreach ($this->headers as $name => $value) {
+        foreach ($headers as $name => $value) {
             $headerPieces[] = $name . ': ' . $value;
         }
 
         $headerPieces = implode("\n", $headerPieces);
 
-        $stringToSign = $headerPieces;
-
-        $result = openssl_sign($stringToSign, $signature, $privateKey, 'sha256WithRSAEncryption');
+        $result = openssl_sign($headerPieces, $signature, $privateKey, 'sha256WithRSAEncryption');
 
         if ($result === false) {
             throw new Exception('Could not sign: ' . openssl_error_string());
@@ -63,7 +62,7 @@ class RequestSignature
         return sprintf(
             'Signature keyId="%s", algorithm="SHA256withRSA", headers="%s", signature="%s"',
             openssl_x509_fingerprint($this->iDEAL->getConfig()->getMerchantCertificate()),
-            implode(' ', array_keys($this->headers)),
+            implode(' ', array_keys($headers)),
             base64_encode($signature)
         );
     }

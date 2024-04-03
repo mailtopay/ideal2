@@ -14,6 +14,7 @@ readonly class Config
         private string $merchantPassphrase,
         private string $acquirerCertificate,
         private BankInterface $bank,
+        private string $notificationUrl,
     )
     {
     }
@@ -71,6 +72,11 @@ readonly class Config
     public function getMerchantPassphrase(): string
     {
         return $this->merchantPassphrase;
+    }
+
+    public function getNotificationUrl(): string
+    {
+        return $this->notificationUrl;
     }
 
 }

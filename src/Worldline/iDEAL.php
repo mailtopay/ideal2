@@ -6,7 +6,6 @@ use POM\iDEAL\Worldline\Requests\AccessTokenRequest;
 use POM\iDEAL\Worldline\Requests\TransactionRequest;
 use POM\iDEAL\Worldline\Requests\TransactionStatusRequest;
 use POM\iDEAL\Worldline\Resources\AccessToken;
-use POM\iDEAL\Worldline\Resources\TransactionStatus;
 
 readonly class iDEAL
 {

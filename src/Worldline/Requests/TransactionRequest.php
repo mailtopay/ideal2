@@ -2,39 +2,24 @@
 
 namespace POM\iDEAL\Worldline\Requests;
 
-use DateTime;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
-use POM\iDEAL\Worldline\iDEAL;
-use POM\iDEAL\Worldline\Resources\AccessToken;
-use POM\iDEAL\Worldline\Resources\RequestSignature;
 use POM\iDEAL\Worldline\Resources\Transaction;
-use Ramsey\Uuid\Uuid;
 
-readonly class TransactionRequest
+class TransactionRequest extends Request
 {
-    /**
-     * @param iDEAL $iDEAL
-     * @param AccessToken $accessToken
-     */
-    public function __construct(private iDEAL $iDEAL, private AccessToken $accessToken)
-    {
-    }
+    protected string $requestMethod = 'POST';
+    protected string $endpoint = '/xs2a/routingservice/services/ob/pis/v3/payments';
 
     /**
-     * @param string $amount
+     * @param int $amount
      * @param string $reference
      * @param string $returnUrl
      * @return Transaction
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function execute(int $amount, string $reference, string $returnUrl): Transaction
     {
         $amount = number_format($amount / 100, 2, '.', '');
-        $client = new Client();
 
-        $endpoint = '/xs2a/routingservice/services/ob/pis/v3/payments';
-        $body = [
+        $this->body = [
             'PaymentProduct'    => [
                 'IDEAL',
             ],
@@ -55,42 +40,11 @@ readonly class TransactionRequest
             ],
         ];
 
-        $dateTime = new DateTime('now');
+        $this->setHeader('InitiatingPartyNotificationUrl', $this->iDEAL->getConfig()->getNotificationUrl());
+        $this->setHeader('InitiatingPartyReturnUrl', $returnUrl);
 
-        $requestId = Uuid::uuid4();
-        $encodedBody = 'SHA-256='.base64_encode(hash('sha256', json_encode($body), true));
+        $result = parent::send();
 
-        $requestSignature = new RequestSignature(
-            $this->iDEAL,
-            $dateTime,
-            $requestId,
-            $encodedBody,
-            'POST',
-            $endpoint
-        );
-
-        // set up the HTTP headers
-        $headers = [
-            'Digest' => $encodedBody,
-            'X-Request-ID' => $requestId->toString(),
-            'MessageCreateDateTime' => $dateTime->format(DATE_ATOM),
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $this->accessToken->getToken(),
-            'Content-Type' => 'application/json',
-            'Signature' => $requestSignature->getSignature(),
-            'InitiatingPartyNotificationUrl' => $returnUrl,
-        ];
-
-        $request = new Request(
-            'POST',
-            $this->iDEAL->getConfig()->getBaseUrl() . $endpoint,
-            $headers,
-            json_encode($body)
-        );
-
-        $response = $client->send($request);
-        $data = json_decode($response->getBody()->getContents(), true);
-
-        return Transaction::fromArray($data);
+        return Transaction::fromArray($result);
     }
 }
