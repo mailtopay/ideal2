@@ -4,7 +4,6 @@ namespace POM\iDEAL\Worldline\Requests;
 
 use DateInterval;
 use DateTime;
-use DateTimeZone;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use POM\iDEAL\Worldline\iDEAL;
