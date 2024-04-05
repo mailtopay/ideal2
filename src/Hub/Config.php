@@ -18,6 +18,7 @@ readonly class Config
      * @param string $INGmTLSKeyPath
      * @param string $INGmTLSPassPhrase
      * @param OpenSSLAsymmetricKey|OpenSSLCertificate|string $INGSigningKey
+     * @param string $INGSigningPassphrase
      * @param string $INGSigningCertificate The signing certificate for requests to the ING API in DER format
      * @param string $hubmTLSCertificatePath
      * @param string $hubmTLSKeyPath
@@ -35,6 +36,7 @@ readonly class Config
         private string $INGmTLSKeyPath,
         private string $INGmTLSPassPhrase,
         private OpenSSLAsymmetricKey|OpenSSLCertificate|string $INGSigningKey,
+        private string $INGSigningPassphrase,
         private string $INGSigningCertificate,
         private string $hubmTLSCertificatePath,
         private string $hubmTLSKeyPath,
@@ -105,6 +107,14 @@ readonly class Config
     public function getINGSigningKey(): OpenSSLAsymmetricKey|OpenSSLCertificate|string
     {
         return $this->INGSigningKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getINGSigningPassphrase(): string
+    {
+        return $this->INGSigningPassphrase;
     }
 
     /**

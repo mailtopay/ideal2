@@ -76,6 +76,12 @@ readonly class AccessTokenRequest
      */
     private function createJWT(): string
     {
+        // prepare signing key
+        $signingKey = openssl_pkey_get_private(
+            $this->iDEAL->getConfig()->getINGSigningKey(),
+            $this->iDEAL->getConfig()->getINGSigningPassphrase(),
+        );
+
         $payload = [
             "iss" => $this->iDEAL->getConfig()->getMerchantId(),
             "sub" => $this->iDEAL->getConfig()->getMerchantId(),
@@ -91,7 +97,7 @@ readonly class AccessTokenRequest
 
         return JWT::encode(
             $payload,
-            $this->iDEAL->getConfig()->getINGSigningKey(),
+            $signingKey,
             $this->iDEAL->getConfig()->getSigningAlgorithm()->value,
             null,
             $headers
