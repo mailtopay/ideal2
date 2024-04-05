@@ -2,14 +2,31 @@
 
 namespace POM\iDEAL\Hub\Resources;
 
+use DateTime;
+use DateTimeZone;
+use Exception;
 use Firebase\JWT\JWT;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
+use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Hub\SigningAlgorithm;
 
 readonly class HubSignature
 {
+    /**
+     * @var array
+     */
     private array $headers;
+
+    /**
+     * @param string $signingCertificate
+     * @param OpenSSLAsymmetricKey|OpenSSLCertificate|string $signingKey
+     * @param SigningAlgorithm $signingAlgorithm
+     * @param string $merchantId
+     * @param string $tokenRequestId
+     * @param string $requestId
+     * @throws IDEALException
+     */
     public function __construct(
         string $signingCertificate,
         private OpenSSLAsymmetricKey|OpenSSLCertificate|string $signingKey,
@@ -18,6 +35,12 @@ readonly class HubSignature
         string $tokenRequestId,
         string $requestId
     ) {
+        try {
+            $utcDate = (new DateTime('now', new DateTimeZone('UTC')))->format('Y-m-d\TH:i:s.000\Z');
+        } catch (Exception) {
+            throw new IDEALException('Failed generating date, this shouldn\'t happen');
+        }
+
         $this->headers = [
             'typ' => 'jose+json',
             'x5c' => [base64_encode($signingCertificate)],
@@ -26,7 +49,7 @@ readonly class HubSignature
             'https://idealapi.nl/iss' => $merchantId,
             'https://idealapi.nl/scope' => 'MERCHANT',
             'https://idealapi.nl/acq' => substr($merchantId, 0, 4),
-            'https://idealapi.nl/iat' => date('Y-m-d\TH:i:s.000\Z'),
+            'https://idealapi.nl/iat' => $utcDate,
             'https://idealapi.nl/jti' => $requestId,
             'https://idealapi.nl/token-jti' => $tokenRequestId,
             'crit' => [
@@ -45,7 +68,7 @@ readonly class HubSignature
     /**
      * Get a detached JWT from the request
      *
-     * @param array $payload
+     * @param string|array $payload
      * @param string $path
      * @return string
      */

@@ -4,9 +4,12 @@ namespace POM\iDEAL\Hub\Requests;
 
 use DateInterval;
 use DateTime;
+use Exception;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Helpers\Encode;
 use POM\iDEAL\Hub\iDEAL;
 use POM\iDEAL\Hub\Resources\AccessToken;
@@ -18,7 +21,10 @@ readonly class AccessTokenRequest
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * Retrieves an access token from the ING API
+     *
+     * @return AccessToken
+     * @throws IDEALException
      */
     public function execute(): AccessToken
     {
@@ -36,35 +42,37 @@ readonly class AccessTokenRequest
                 'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer', // always the same
                 'client_assertion' => $this->createJWT(),
             ],
-            'cert'      => [$this->iDEAL->getConfig()->getINGmTLSCertificatePath(), $this->iDEAL->getConfig()->getINGmTLSPassPhrase()],
-            'ssl_key'   => [$this->iDEAL->getConfig()->getINGmTLSKeyPath(), $this->iDEAL->getConfig()->getINGmTLSPassPhrase()],
+            'cert'      => [
+                $this->iDEAL->getConfig()->getINGmTLSCertificatePath(),
+                $this->iDEAL->getConfig()->getINGmTLSPassPhrase()
+            ],
+            'ssl_key'   => [
+                $this->iDEAL->getConfig()->getINGmTLSKeyPath(),
+                $this->iDEAL->getConfig()->getINGmTLSPassPhrase()
+            ],
         ];
 
         $request  = new Request('POST', $this->iDEAL->getConfig()->getAcquirerBaseUrl() . '/ideal2/merchanttoken', $headers);
 
-        $response = $client->send($request, $options);
+        try {
+            $response = $client->send($request, $options);
+        } catch (GuzzleException $e) {
+            throw new IDEALException("Failed retrieving access token from ING: {$e->getMessage()}");
+        }
 
-        $responseBody = $response->getBody()->getContents();
-
-        $response = json_decode($responseBody);
+        $response = json_decode($response->getBody()->getContents());
 
         $expireDateTime = new DateTime();
-        $expireDateTime->add(new DateInterval('PT' . $response->expires_in . 'S'));
 
-        // Decode headers from the JWT string WITHOUT validation
-        // **IMPORTANT**: This operation is vulnerable to attacks, as the JWT has not yet been verified.
-        // These headers could be any value sent by an attacker.
-        list($headersB64, $payloadB64, $sig) = explode('.', $response->access_token);
+        try {
+            $interval = new DateInterval('PT' . $response->expires_in . 'S');
+        } catch (Exception) {
+            throw new IDEALException('Failed parsing token expiry');
+        }
 
-//        var_dump(base64_decode($headersB64));
-//        var_dump(base64_decode($payloadB64));
-//        exit;
+        $expireDateTime->add($interval);
 
-//        $payload = JWT::decode(
-//            $response->access_token,
-//            new Key(file_get_contents('../certificates/signing-hub-sandbox.pem'),
-//            $this->iDEAL->getSigningAlgorithm())
-//        );
+        list(,$payloadB64,) = explode('.', $response->access_token);
 
         $payload = json_decode(base64_decode($payloadB64), true);
 
@@ -72,7 +80,7 @@ readonly class AccessTokenRequest
     }
 
     /**
-     * @return string
+     * @return string Signed JWT token of the request
      */
     private function createJWT(): string
     {

@@ -5,6 +5,7 @@ namespace POM\iDEAL\Hub;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 use POM\iDEAL\Banks\BankInterface;
+use Psr\SimpleCache\CacheInterface;
 
 readonly class Config
 {
@@ -13,7 +14,7 @@ readonly class Config
     /**
      * @param string $merchantId
      * @param bool $testMode
-     * @param string $INGBaseUrl
+     * @param BankInterface $bank
      * @param string $INGmTLSCertificatePath
      * @param string $INGmTLSKeyPath
      * @param string $INGmTLSPassPhrase
@@ -25,8 +26,9 @@ readonly class Config
      * @param string $hubmTLSPassphrase
      * @param OpenSSLAsymmetricKey|OpenSSLCertificate|string $hubSigningKey
      * @param string $hubSigningCertificate The signing certificate for requests to the Currence iDEAL hub in DER format
-     * @param string $hubSigningPassphrase
+     * @param string $hubSigningPassphrase The passphrase to decrypt the hub signing keys
      * @param SigningAlgorithm $signingAlgorithm
+     * @param CacheInterface $cache Caching to store the hub signing certificates
      */
     public function __construct(
         private string $merchantId,
@@ -45,6 +47,7 @@ readonly class Config
         private string $hubSigningCertificate,
         private string $hubSigningPassphrase,
         private SigningAlgorithm $signingAlgorithm,
+        private CacheInterface $cache,
     ) {
         if ($this->testMode) {
             $this->hubBaseUrl = 'https://merchant-cpsp-mtls.ext.idealapi.nl';
@@ -165,18 +168,35 @@ readonly class Config
         return $this->signingAlgorithm;
     }
 
+    /**
+     * @return string
+     */
     public function getHubSigningPassphrase(): string
     {
         return $this->hubSigningPassphrase;
     }
 
+    /**
+     * @return string
+     */
     public function getAcquirerBaseUrl(): string
     {
         return $this->bank->getBaseUrl();
     }
 
+    /**
+     * @return string
+     */
     public function getHubBaseUrl(): string
     {
         return $this->hubBaseUrl;
+    }
+
+    /**
+     * @return CacheInterface
+     */
+    public function getCache(): CacheInterface
+    {
+        return $this->cache;
     }
 }

@@ -8,6 +8,10 @@
         "guzzlehttp/guzzle": "^7.8",
         "firebase/php-jwt": "^6.10",
         "web-token/jwt-framework": "^3.3",
-        "ramsey/uuid": "^3.9"
+        "ramsey/uuid": "^3.9",
+        "psr/simple-cache": "^3"
+    },
+    "require-dev": {
+        "matthiasmullie/scrapbook": "^1.5.0"
     }
 }

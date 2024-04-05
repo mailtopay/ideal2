@@ -2,7 +2,11 @@
 
 namespace POM\iDEAL\Hub\Requests;
 
+use Exception;
+use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Hub\iDEAL;
 use POM\iDEAL\Hub\Resources\AccessToken;
 use POM\iDEAL\Hub\Resources\HubSignature;
@@ -25,7 +29,7 @@ class Request
     /**
      * @param iDEAL $iDEAL
      * @param AccessToken $accessToken
-     * @throws \Exception
+     * @throws IDEALException
      */
     public function __construct(private readonly iDEAL $iDEAL, private readonly AccessToken $accessToken)
     {
@@ -36,7 +40,11 @@ class Request
         );
 
         // generate new
-        $this->requestId = (Uuid::uuid4())->toString();
+        try {
+            $this->requestId = (Uuid::uuid4())->toString();
+        } catch (Exception) {
+            throw new IDEALException('Failed generating request id, this shouldnt happen');
+        }
 
         // setup hub signer
         $this->hubSignature = new HubSignature(
@@ -54,8 +62,14 @@ class Request
         ]);
 
         $this->options = [
-            'cert'      => [$this->iDEAL->getConfig()->getHubmTLSCertificatePath(), $this->iDEAL->getConfig()->getHubmTLSPassphrase()],
-            'ssl_key'   => [$this->iDEAL->getConfig()->getHubmTLSKeyPath(), $this->iDEAL->getConfig()->getHubmTLSPassphrase()],
+            'cert'      => [
+                $this->iDEAL->getConfig()->getHubmTLSCertificatePath(),
+                $this->iDEAL->getConfig()->getHubmTLSPassphrase()
+            ],
+            'ssl_key'   => [
+                $this->iDEAL->getConfig()->getHubmTLSKeyPath(),
+                $this->iDEAL->getConfig()->getHubmTLSPassphrase()
+            ],
         ];
 
         $this->headers = [
@@ -64,9 +78,14 @@ class Request
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '. $this->accessToken->getToken(),
         ];
-
     }
 
+    /**
+     * Sends the request to the Currence iDEAL hub
+     *
+     * @return array The JSON-decoded response body
+     * @throws IDEALException
+     */
     protected function send(): array
     {
         $signatureHeader = [
@@ -77,6 +96,7 @@ class Request
 
         $body = $this->body;
 
+        // json encode the body if an array has been provided
         if (is_array($body)) {
             $body = json_encode($body, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
@@ -88,8 +108,38 @@ class Request
             $body,
         );
 
-        $response = $this->client->send($request, $this->options);
+        try {
+            $response = $this->client->send($request, $this->options);
+        } catch (GuzzleException $e) {
+            throw new IDEALException("Hub request failed: {$e->getMessage()}");
+        }
 
-        return json_decode($response->getBody()->getContents(), true);
+        $responseId = $response->getHeader('Request-Id');
+        $responseId = $responseId[0] ?? '';
+
+        if ($responseId !== $this->requestId) {
+            throw new IDEALException("Response verification failure: request ID");
+        }
+
+        $responseSignature = $response->getHeader('Signature');
+        $responseSignature = $responseSignature[0] ?? '';
+
+        if (empty($responseSignature)) {
+            throw new IDEALException("Response verification failure: No signature");
+        }
+
+        $responseBody = $response->getBody()->getContents();
+
+        $responseSignature = str_replace('..', ".".JWT::urlsafeB64Encode($responseBody).".", $responseSignature);
+
+        // decode the jwt to verify signature
+        try {
+            JWT::decode($responseSignature, $this->iDEAL->getCertificateStore()->getCertificates());
+        }
+        catch (Exception $e) {
+            throw new IDEALException("Signature validation failed: {$e->getMessage()}");
+        }
+
+        return json_decode($responseBody, true);
     }
 }

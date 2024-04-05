@@ -4,9 +4,6 @@ namespace POM\iDEAL\Hub\Resources;
 
 use DateTime;
 
-/**
- *
- */
 readonly class AccessToken
 {
     public function __construct(
