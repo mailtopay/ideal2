@@ -3,6 +3,7 @@
 namespace POM\iDEAL\Worldline\Resources;
 
 use DateTime;
+use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Worldline\iDEAL;
 
 class AccessSignature
@@ -24,14 +25,14 @@ class AccessSignature
      * Get a signature based on the headers
      *
      * @return string
-     * @throws \Exception
+     * @throws IDEALException
      */
     public function getSignature(): string
     {
         $privateKey = openssl_pkey_get_private($this->iDEAL->getConfig()->getMerchantKey(), $this->iDEAL->getConfig()->getMerchantPassphrase());
 
         if ($privateKey === false) {
-            throw new \Exception('Could not get private key: ' . openssl_error_string());
+            throw new IDEALException('Could not get private key: ' . openssl_error_string());
         }
 
         $headerPieces = [];
@@ -47,7 +48,7 @@ class AccessSignature
         $result = openssl_sign($stringToSign, $signature, $privateKey, 'sha256WithRSAEncryption');
 
         if ($result === false) {
-            throw new \Exception('Could not sign: ' .  openssl_error_string());
+            throw new IDEALException('Could not sign: ' .  openssl_error_string());
         }
 
         return sprintf(

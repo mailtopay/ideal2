@@ -2,6 +2,7 @@
 
 namespace POM\iDEAL\Worldline\Requests;
 
+use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Worldline\Resources\Transaction;
 
 class TransactionRequest extends Request
@@ -14,6 +15,7 @@ class TransactionRequest extends Request
      * @param string $reference
      * @param string $returnUrl
      * @return Transaction
+     * @throws IDEALException
      */
     public function execute(int $amount, string $reference, string $returnUrl): Transaction
     {

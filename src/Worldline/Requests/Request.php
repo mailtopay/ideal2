@@ -4,6 +4,8 @@ namespace POM\iDEAL\Worldline\Requests;
 
 use DateTime;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Worldline\iDEAL;
 use POM\iDEAL\Worldline\Resources\AccessToken;
 use POM\iDEAL\Worldline\Resources\RequestSignature;
@@ -20,13 +22,20 @@ class Request
     private RequestSignature $requestSignature;
     private array $headers;
 
+    /**
+     * @throws IDEALException
+     */
     public function __construct(protected iDEAL $iDEAL, private AccessToken $accessToken)
     {
         $this->client = new Client([
             'base_uri' => $this->iDEAL->getConfig()->getBaseUrl(),
         ]);
 
-        $this->requestId = (Uuid::uuid4())->toString();
+        try {
+            $this->requestId = (Uuid::uuid4())->toString();
+        } catch (\Exception $e) {
+            throw new IDEALException('Could not create uuid: ' . $e->getMessage());
+        }
         $this->messageDatetime = new DateTime();
 
         $this->requestSignature = new RequestSignature(
@@ -44,11 +53,18 @@ class Request
         ];
     }
 
+    /**
+     * @throws IDEALException
+     */
     protected function send(): array
     {
-        $headers = [
-            'Signature' => $this->requestSignature->getSignature($this->body, $this->requestMethod, $this->endpoint),
-        ];
+        try {
+            $headers = [
+                'Signature' => $this->requestSignature->getSignature($this->body, $this->requestMethod, $this->endpoint),
+            ];
+        } catch (\Exception $e) {
+            throw new IDEALException('Could not create signature: ' . $e->getMessage());
+        }
 
         $headers = array_merge($this->headers, $headers);
 
@@ -70,7 +86,11 @@ class Request
             $body,
         );
 
-        $response = $this->client->send($request);
+        try {
+            $response = $this->client->send($request);
+        } catch (GuzzleException $e) {
+            throw new IDEALException('Could not send request: ' . $e->getMessage());
+        }
 
         return json_decode($response->getBody()->getContents(), true);
     }

@@ -3,10 +3,6 @@
 namespace POM\iDEAL\Worldline\Resources;
 
 use DateTime;
-
-/**
- *
- */
 readonly class AccessToken
 {
     public function __construct(
