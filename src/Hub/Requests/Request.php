@@ -8,7 +8,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Hub\iDEAL;
-use POM\iDEAL\Hub\Resources\AccessToken;
 use POM\iDEAL\Hub\Resources\HubSignature;
 use Ramsey\Uuid\Uuid;
 
