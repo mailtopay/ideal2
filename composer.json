@@ -8,6 +8,18 @@
         "Currence",
         "Worldline"
     ],
+    "authors": [
+        {
+            "name": "Kevin van Hulst",
+            "email": "kevin.van.hulst@pom.eu",
+            "role": "Developer"
+        },
+        {
+            "name": "Patrick Huiskens",
+            "email": "patrick.huiskens@pom.eu",
+            "role": "Developer"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "POM\\iDEAL\\": "src"
