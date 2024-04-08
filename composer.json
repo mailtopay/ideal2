@@ -1,13 +1,23 @@
 {
+    "name": "pom/ideal2",
+    "type": "library",
+    "description": "Complete library for connecting to different kinds of iDEAL implementations",
+    "keywords": [
+        "iDEAL",
+        "iDEAL 2.0",
+        "Currence",
+        "Worldline"
+    ],
     "autoload": {
         "psr-4": {
             "POM\\iDEAL\\": "src"
         }
     },
     "require": {
+        "php": ">= 8.2",
+        "ext-openssl": "*",
         "guzzlehttp/guzzle": "^7.8",
         "firebase/php-jwt": "^6.10",
-        "web-token/jwt-framework": "^3.3",
         "ramsey/uuid": "^3.9",
         "psr/simple-cache": "^3"
     },
