@@ -3,9 +3,25 @@
 namespace POM\iDEAL\Worldline;
 
 use POM\iDEAL\Banks\BankInterface;
+use Psr\SimpleCache\CacheInterface;
 
 readonly class Config
 {
+
+    private string $cachePrefix;
+
+    /**
+     * @param string $merchantId
+     * @param bool $testMode
+     * @param string $merchantCertificate
+     * @param string $merchantKey
+     * @param string $merchantPassphrase
+     * @param string $acquirerCertificate
+     * @param BankInterface $bank
+     * @param string $notificationUrl
+     * @param CacheInterface $cache
+     * @param string $cachePrefix
+     */
     public function __construct(
         private string $merchantId,
         private bool $testMode,
@@ -15,8 +31,15 @@ readonly class Config
         private string $acquirerCertificate,
         private BankInterface $bank,
         private string $notificationUrl,
+        private CacheInterface $cache,
+        ?string $cachePrefix = null,
     )
     {
+        if (!is_null($cachePrefix)) {
+            $this->cachePrefix = $cachePrefix;
+        } else {
+            $this->cachePrefix = $this->testMode ? 'pom_ideal2_test' : 'pom_ideal2';
+        }
     }
 
     /**
@@ -77,6 +100,22 @@ readonly class Config
     public function getNotificationUrl(): string
     {
         return $this->notificationUrl;
+    }
+
+    /**
+     * @return CacheInterface
+     */
+    public function getCache(): CacheInterface
+    {
+        return $this->cache;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCachePrefix(): string
+    {
+        return $this->cachePrefix;
     }
 
 }

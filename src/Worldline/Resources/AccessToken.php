@@ -2,12 +2,16 @@
 
 namespace POM\iDEAL\Worldline\Resources;
 
-use DateTime;
+use DateInterval;
 readonly class AccessToken
 {
+    /**
+     * @param string $token
+     * @param DateInterval|null $expire
+     */
     public function __construct(
         private string $token,
-        private DateTime $expire,
+        private ?DateInterval $expire = null,
     ) {
     }
 
@@ -20,9 +24,9 @@ readonly class AccessToken
     }
 
     /**
-     * @return DateTime
+     * @return DateInterval
      */
-    public function getExpire(): DateTime
+    public function getExpire(): DateInterval
     {
         return $this->expire;
     }

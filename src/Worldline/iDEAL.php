@@ -2,6 +2,10 @@
 
 namespace POM\iDEAL\Worldline;
 
+use DateInterval;
+use DateTime;
+use Exception;
+use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Worldline\Requests\AccessTokenRequest;
 use POM\iDEAL\Worldline\Requests\TransactionRequest;
 use POM\iDEAL\Worldline\Requests\TransactionStatusRequest;
@@ -9,31 +13,53 @@ use POM\iDEAL\Worldline\Resources\AccessToken;
 
 readonly class iDEAL
 {
+
+    private AccessToken $accessToken;
     /**
      * @param Config $config
      */
     public function __construct(private Config $config)
     {
+        $this->accessToken = $this->retrieveAccessToken();
     }
 
-    public function createAccessTokenRequest(): AccessTokenRequest
+    /**
+     * @return AccessTokenRequest|AccessToken
+     * @throws IDEALException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function retrieveAccessToken()
     {
-        return new AccessTokenRequest($this);
+        $cache      = $this->config->getCache();
+        $cacheKey   = $this->config->getCachePrefix() . 'accessToken.'.$this->config->getMerchantId();
+        $accessTokenCache = $cache->get($cacheKey);
+
+        if (!empty($accessTokenCache)) {
+            return new AccessToken($accessTokenCache);
+        }
+
+        $accessToken = (new AccessTokenRequest($this))->execute();
+
+        $cache->set($cacheKey, $accessToken->getToken(), $accessToken->getExpire());
     }
 
-    public function createTransactionRequest(AccessToken $accessToken): TransactionRequest
+    /**
+     * @throws IDEALException
+     */
+    public function createTransactionRequest(): TransactionRequest
     {
         return new TransactionRequest(
-            $this,
-            $accessToken
+            $this
         );
     }
 
-    public function doStatusRequest(AccessToken $accessToken): TransactionStatusRequest
+    /**
+     * @throws IDEALException
+     */
+    public function doStatusRequest(): TransactionStatusRequest
     {
         return new TransactionStatusRequest(
-            $this,
-            $accessToken
+            $this
         );
     }
 
@@ -85,5 +111,13 @@ readonly class iDEAL
     public function getConfig(): Config
     {
         return $this->config;
+    }
+
+    /**
+     * @return AccessToken
+     */
+    public function getAccessToken(): AccessToken
+    {
+        return $this->accessToken;
     }
 }

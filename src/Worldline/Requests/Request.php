@@ -7,7 +7,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Worldline\iDEAL;
-use POM\iDEAL\Worldline\Resources\AccessToken;
 use POM\iDEAL\Worldline\Resources\RequestSignature;
 use Ramsey\Uuid\Uuid;
 
@@ -25,7 +24,7 @@ class Request
     /**
      * @throws IDEALException
      */
-    public function __construct(protected iDEAL $iDEAL, private AccessToken $accessToken)
+    public function __construct(protected iDEAL $iDEAL)
     {
         $this->client = new Client([
             'base_uri' => $this->iDEAL->getConfig()->getBaseUrl(),
@@ -48,7 +47,7 @@ class Request
             'X-Request-ID' => $this->requestId,
             'MessageCreateDateTime' => $this->messageDatetime->format(DATE_ATOM),
             'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $this->accessToken->getToken(),
+            'Authorization' => 'Bearer ' . $this->iDEAL->getAccessToken()->getToken(),
             'Content-Type' => 'application/json',
         ];
     }
