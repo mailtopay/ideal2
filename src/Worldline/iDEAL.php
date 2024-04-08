@@ -28,7 +28,7 @@ readonly class iDEAL
      * @throws IDEALException
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function retrieveAccessToken()
+    public function retrieveAccessToken(): AccessToken
     {
         $cache      = $this->config->getCache();
         $cacheKey   = $this->config->getCachePrefix() . 'accessToken.'.$this->config->getMerchantId();
@@ -41,6 +41,8 @@ readonly class iDEAL
         $accessToken = (new AccessTokenRequest($this))->execute();
 
         $cache->set($cacheKey, $accessToken->getToken(), $accessToken->getExpire());
+
+        return new AccessToken($accessToken->getToken());
     }
 
     /**

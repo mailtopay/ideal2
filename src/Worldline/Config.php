@@ -38,7 +38,7 @@ readonly class Config
         if (!is_null($cachePrefix)) {
             $this->cachePrefix = $cachePrefix;
         } else {
-            $this->cachePrefix = $this->testMode ? 'pom_ideal2_test' : 'pom_ideal2';
+            $this->cachePrefix = $this->testMode ? 'pom_ideal2_test_' : 'pom_ideal2_';
         }
     }
 

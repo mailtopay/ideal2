@@ -58,14 +58,15 @@ readonly class AccessTokenRequest
         $response = json_decode($responseBody);
 
         try {
-            $expireDateTime = new DateInterval('PT' . $response->expires_in . 'S');
+            $response->expires_in -= 30;
+            $expireInterval = new DateInterval('PT' . $response->expires_in . 'S');
         } catch (\Exception $e) {
             throw new IDEALException('DateTime interval failed: ' . $e->getMessage());
         }
 
 
 
-        return new AccessToken($response->access_token, $expireDateTime);
+        return new AccessToken($response->access_token, $expireInterval);
     }
 
 }
