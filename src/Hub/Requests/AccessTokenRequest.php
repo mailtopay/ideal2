@@ -3,7 +3,6 @@
 namespace POM\iDEAL\Hub\Requests;
 
 use DateInterval;
-use DateTime;
 use Exception;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
@@ -62,21 +61,19 @@ readonly class AccessTokenRequest
 
         $response = json_decode($response->getBody()->getContents());
 
-        $expireDateTime = new DateTime();
+        $expires_in = $response->expires_in - 10;
 
         try {
-            $interval = new DateInterval('PT' . $response->expires_in . 'S');
+            $interval = new DateInterval('PT' . $expires_in . 'S');
         } catch (Exception) {
             throw new IDEALException('Failed parsing token expiry');
         }
-
-        $expireDateTime->add($interval);
 
         list(,$payloadB64,) = explode('.', $response->access_token);
 
         $payload = json_decode(base64_decode($payloadB64), true);
 
-        return new AccessToken($response->access_token, $expireDateTime, $payload['jti']);
+        return new AccessToken($response->access_token, $payload['jti'], $interval);
     }
 
     /**

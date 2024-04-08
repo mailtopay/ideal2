@@ -2,14 +2,14 @@
 
 namespace POM\iDEAL\Hub\Resources;
 
-use DateTime;
+use DateInterval;
 
 readonly class AccessToken
 {
     public function __construct(
         private string $token,
-        private DateTime $expire,
-        private string $id
+        private string $id,
+        private ?DateInterval $expire = null,
     ) {
     }
 
@@ -22,9 +22,9 @@ readonly class AccessToken
     }
 
     /**
-     * @return DateTime
+     * @return ?DateInterval
      */
-    public function getExpire(): DateTime
+    public function getExpire(): ?DateInterval
     {
         return $this->expire;
     }

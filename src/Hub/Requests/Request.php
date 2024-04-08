@@ -28,10 +28,9 @@ class Request
 
     /**
      * @param iDEAL $iDEAL
-     * @param AccessToken $accessToken
      * @throws IDEALException
      */
-    public function __construct(private readonly iDEAL $iDEAL, private readonly AccessToken $accessToken)
+    public function __construct(private readonly iDEAL $iDEAL)
     {
         // prepare signing key
         $signingKey = openssl_pkey_get_private(
@@ -52,7 +51,7 @@ class Request
             $signingKey,
             $this->iDEAL->getConfig()->getSigningAlgorithm(),
             $this->iDEAL->getConfig()->getMerchantId(),
-            $this->accessToken->getId(),
+            $this->iDEAL->getAccessToken()->getId(),
             $this->requestId,
         );
 
@@ -76,7 +75,7 @@ class Request
             'Request-ID' => $this->requestId,
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-            'Authorization' => 'Bearer '. $this->accessToken->getToken(),
+            'Authorization' => 'Bearer '. $this->iDEAL->getAccessToken()->getToken(),
         ];
     }
 

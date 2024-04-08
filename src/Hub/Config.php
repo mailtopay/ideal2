@@ -10,6 +10,7 @@ use Psr\SimpleCache\CacheInterface;
 readonly class Config
 {
     private string $hubBaseUrl;
+    private string $cachePrefix;
 
     /**
      * @param string $merchantId
@@ -29,6 +30,7 @@ readonly class Config
      * @param string $hubSigningPassphrase The passphrase to decrypt the hub signing keys
      * @param SigningAlgorithm $signingAlgorithm
      * @param CacheInterface $cache Caching to store the hub signing certificates
+     * @param string|null $cachePrefix Optional caching prefix default 'pom_ideal2_test' or 'pom_ideal2'
      */
     public function __construct(
         private string $merchantId,
@@ -48,11 +50,18 @@ readonly class Config
         private string $hubSigningPassphrase,
         private SigningAlgorithm $signingAlgorithm,
         private CacheInterface $cache,
+        string $cachePrefix = null,
     ) {
         if ($this->testMode) {
             $this->hubBaseUrl = 'https://merchant-cpsp-mtls.ext.idealapi.nl';
         } else {
             $this->hubBaseUrl = 'https://merchant-cpsp-mtls.idealapi.nl';
+        }
+
+        if (!is_null($cachePrefix)) {
+            $this->cachePrefix = $cachePrefix;
+        } else {
+            $this->cachePrefix = $this->testMode ? 'pom_ideal2_test' : 'pom_ideal2';
         }
     }
 
@@ -198,5 +207,13 @@ readonly class Config
     public function getCache(): CacheInterface
     {
         return $this->cache;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCachePrefix(): string
+    {
+        return $this->cachePrefix;
     }
 }

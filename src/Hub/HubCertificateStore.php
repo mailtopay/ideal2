@@ -15,15 +15,11 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 readonly class HubCertificateStore
 {
-    private string $cachePrefix;
-
     /**
      * @throws IDEALException
      */
-    public function __construct(private CacheInterface $cache, private bool $testMode)
+    public function __construct(private CacheInterface $cache, private bool $testMode, private string $cachePrefix)
     {
-        $this->cachePrefix = $this->testMode ? 'pom_ideal2_test' : 'pom_ideal2';
-
         $this->retrieveCertificates();
     }
 
