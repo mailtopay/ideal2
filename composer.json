@@ -1,5 +1,5 @@
 {
-    "name": "pom/ideal2",
+    "name": "peaceofmind/ideal2",
     "type": "library",
     "description": "Complete library for connecting to different kinds of iDEAL implementations",
     "keywords": [
