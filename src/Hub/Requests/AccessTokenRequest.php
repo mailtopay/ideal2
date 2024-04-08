@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use POM\iDEAL\Exceptions\IDEALException;
+use POM\iDEAL\Helpers\DerConverter;
 use POM\iDEAL\Helpers\Encode;
 use POM\iDEAL\Hub\iDEAL;
 use POM\iDEAL\Hub\Resources\AccessToken;
@@ -116,7 +117,8 @@ readonly class AccessTokenRequest
      */
     private function calculateDigest(): string
     {
-        $sha256Digest = hash('sha256', $this->iDEAL->getConfig()->getINGSigningCertificate(), true);
+        $derFormatted = DerConverter::pemToDer($this->iDEAL->getConfig()->getINGSigningCertificate());
+        $sha256Digest = hash('sha256', $derFormatted, true);
 
         // Encode the SHA256 digest using Base64url encoding
         return Encode::base64UrlEncode($sha256Digest);
