@@ -71,7 +71,6 @@ readonly final class iDEAL
     }
 
     /**
-     * @param AccessToken $accessToken
      * @return TransactionRequest
      * @throws IDEALException
      */
@@ -83,7 +82,6 @@ readonly final class iDEAL
     }
 
     /**
-     * @param AccessToken $accessToken
      * @return TransactionStatusRequest
      * @throws IDEALException
      */
