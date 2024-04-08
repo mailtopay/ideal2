@@ -21,12 +21,12 @@ readonly class Config
      * @param string $INGmTLSPassPhrase
      * @param OpenSSLAsymmetricKey|OpenSSLCertificate|string $INGSigningKey
      * @param string $INGSigningPassphrase
-     * @param string $INGSigningCertificate The signing certificate for requests to the ING API in DER format
+     * @param string $INGSigningCertificate The signing certificate for requests to the ING API in PEM format
      * @param string $hubmTLSCertificatePath
      * @param string $hubmTLSKeyPath
      * @param string $hubmTLSPassphrase
      * @param OpenSSLAsymmetricKey|OpenSSLCertificate|string $hubSigningKey
-     * @param string $hubSigningCertificate The signing certificate for requests to the Currence iDEAL hub in DER format
+     * @param string $hubSigningCertificate The signing certificate for requests to the Currence iDEAL hub in PEM format
      * @param string $hubSigningPassphrase The passphrase to decrypt the hub signing keys
      * @param SigningAlgorithm $signingAlgorithm
      * @param CacheInterface $cache Caching to store the hub signing certificates

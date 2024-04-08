@@ -7,6 +7,7 @@ use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use POM\iDEAL\Exceptions\IDEALException;
+use POM\iDEAL\Helpers\DerConverter;
 use POM\iDEAL\Hub\iDEAL;
 use POM\iDEAL\Hub\Resources\HubSignature;
 use Ramsey\Uuid\Uuid;
@@ -44,9 +45,11 @@ class Request
             throw new IDEALException('Failed generating request id, this shouldnt happen');
         }
 
+        $derFormatted = DerConverter::pemToDer($this->iDEAL->getConfig()->getHubSigningCertificate());
+
         // setup hub signer
         $this->hubSignature = new HubSignature(
-            $this->iDEAL->getConfig()->getHubSigningCertificate(),
+            $derFormatted,
             $signingKey,
             $this->iDEAL->getConfig()->getSigningAlgorithm(),
             $this->iDEAL->getConfig()->getMerchantId(),
