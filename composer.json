@@ -20,6 +20,7 @@
             "role": "Developer"
         }
     ],
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "POM\\iDEAL\\": "src"
