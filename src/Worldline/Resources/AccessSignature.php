@@ -16,8 +16,8 @@ class AccessSignature
         $this->headers = [
             'app' => $this->iDEAL->getConfig()->getBank()->getApp(),
             'client' => $this->iDEAL->getConfig()->getBank()->getClient(),
-            'date' => $this->dateTime->format(DATE_ATOM),
             'id' => $this->iDEAL->getConfig()->getMerchantId(),
+            'date' => $this->dateTime->format(DATE_ATOM),
         ];
     }
 
@@ -40,6 +40,8 @@ class AccessSignature
         foreach ($this->headers as $name => $value) {
             $headerPieces[] = $name . ': ' . $value;
         }
+
+        var_dump($headerPieces);
 
         $headerPieces = implode("\n", $headerPieces);
 
