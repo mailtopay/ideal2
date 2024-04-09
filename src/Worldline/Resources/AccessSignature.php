@@ -41,8 +41,6 @@ class AccessSignature
             $headerPieces[] = $name . ': ' . $value;
         }
 
-        var_dump($headerPieces);
-
         $headerPieces = implode("\n", $headerPieces);
 
         $stringToSign = $headerPieces;
