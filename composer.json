@@ -31,7 +31,7 @@
         "ext-openssl": "*",
         "guzzlehttp/guzzle": "^7.8",
         "firebase/php-jwt": "^6.10",
-        "ramsey/uuid": "^3.9",
+        "ramsey/uuid": "^3||^4",
         "psr/simple-cache": "^3"
     },
     "require-dev": {
