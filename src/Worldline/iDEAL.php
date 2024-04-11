@@ -76,15 +76,15 @@ readonly class iDEAL
 
         // get headers
         if (is_null($headers)) {
-            $digest     = $_SERVER['HTTP_Digest'];
-            $signature  = $_SERVER['HTTP_Signature'];
-            $requestId  = $_SERVER['HTTP_X-Request-ID'];
-            $dateTime   = $_SERVER['HTTP_MessageCreateDateTime'];
+            $digest     = $_SERVER['HTTP_DIGEST'];
+            $signature  = $_SERVER['HTTP_SIGNATURE'];
+            $requestId  = $_SERVER['HTTP_X_REQUEST_ID'];
+            $dateTime   = $_SERVER['HTTP_MESSAGECREATEDATETIME'];
         } else {
-            $digest     = $headers['HTTP_Digest'];
-            $signature  = $headers['HTTP_Signature'];
-            $requestId  = $headers['HTTP_X-Request-ID'];
-            $dateTime   = $headers['HTTP_MessageCreateDateTime'];
+            $digest     = $headers['HTTP_DIGEST'];
+            $signature  = $headers['HTTP_SIGNATURE'];
+            $requestId  = $headers['HTTP_X_REQUEST_ID'];
+            $dateTime   = $headers['HTTP_MESSAGECREATEDATETIME'];
         }
 
         // Check if digest is the same as the one given in the header by Worldline
