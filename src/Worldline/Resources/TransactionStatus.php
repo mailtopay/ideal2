@@ -39,6 +39,7 @@ readonly class TransactionStatus
         private ?string $guaranteedAmount,
         private string $paymentStatus,
         private int $paymentId,
+        private ?string $transactionIdentifier,
         private ?string $name,
         private ?string $agent,
         private ?string $identification,
@@ -139,6 +140,11 @@ readonly class TransactionStatus
         return $this->useWaitingScreen;
     }
 
+    public function getTransactionIdentifier(): ?string
+    {
+        return $this->transactionIdentifier;
+    }
+
     /**
      * @param array $data
      * @return self
@@ -149,6 +155,7 @@ readonly class TransactionStatus
             $data['CommonPaymentData']['GuaranteedAmount'] ?? NULL,
             $data['CommonPaymentData']['PaymentStatus'],
             $data['CommonPaymentData']['PaymentId'],
+            $data['CommonPaymentData']['InitiatingPartyReferenceId'] ?? NULL,
             $data['CommonPaymentData']['DebtorInformation']['Name'] ?? NULL,
             $data['CommonPaymentData']['DebtorInformation']['Agent'] ?? NULL,
             $data['CommonPaymentData']['DebtorInformation']['Account']['Identification'] ?? NULL,

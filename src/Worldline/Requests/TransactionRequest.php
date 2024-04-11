@@ -17,7 +17,7 @@ class TransactionRequest extends Request
      * @return Transaction
      * @throws IDEALException
      */
-    public function execute(int $amount, string $reference, string $returnUrl): Transaction
+    public function execute(int $amount, string $reference, string $transactionsIdentifier, string $returnUrl): Transaction
     {
         $amount = number_format($amount / 100, 2, '.', '');
 
@@ -32,6 +32,7 @@ class TransactionRequest extends Request
                     'Currency' => 'EUR'
                 ],
                 'RemittanceInformation' => 'iDEAL | POM',
+                'InitiatingPartyReferenceId'    => $transactionsIdentifier,
                 'RemittanceInformationStructured' => [
                     'Reference' => $reference
                 ]
