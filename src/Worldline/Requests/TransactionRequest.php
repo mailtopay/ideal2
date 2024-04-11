@@ -13,11 +13,12 @@ class TransactionRequest extends Request
     /**
      * @param int $amount
      * @param string $reference
+     * @param string $transactionIdentifier
      * @param string $returnUrl
      * @return Transaction
      * @throws IDEALException
      */
-    public function execute(int $amount, string $reference, string $transactionsIdentifier, string $returnUrl): Transaction
+    public function execute(int $amount, string $reference, string $transactionIdentifier, string $returnUrl): Transaction
     {
         $amount = number_format($amount / 100, 2, '.', '');
 
@@ -32,7 +33,7 @@ class TransactionRequest extends Request
                     'Currency' => 'EUR'
                 ],
                 'RemittanceInformation' => 'iDEAL | POM',
-                'InitiatingPartyReferenceId'    => $transactionsIdentifier,
+                'InitiatingPartyReferenceId'    => $transactionIdentifier,
                 'RemittanceInformationStructured' => [
                     'Reference' => $reference
                 ]
