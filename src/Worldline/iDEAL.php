@@ -92,7 +92,7 @@ readonly class iDEAL
             return false;
         }
 
-        $headersGiven = sprintf("messagecreatedatetime: %s x-request-id: %s digest: %s", $dateTime, $requestId, $digest);
+        $headersGiven = sprintf("messagecreatedatetime: %s\nx-request-id: %s\ndigest: %s", $dateTime, $requestId, $digest);
 
         // Get the signature
         $items = explode(',', $signature);
