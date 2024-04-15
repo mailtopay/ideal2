@@ -13,8 +13,8 @@ readonly class Transaction
         private DateTime $expire,
         private string $description,
         private string $reference,
-        private string $transactionType,
-        private string $transactionFlow,
+        private ?string $transactionType,
+        private ?string $transactionFlow,
         private int $amount,
         private ?string $redirectUrl,
         private TransactionStatus $status,
@@ -61,18 +61,12 @@ readonly class Transaction
         return $this->reference;
     }
 
-    /**
-     * @return string
-     */
-    public function getTransactionType(): string
+    public function getTransactionType(): ?string
     {
         return $this->transactionType;
     }
 
-    /**
-     * @return string
-     */
-    public function getTransactionFlow(): string
+    public function getTransactionFlow(): ?string
     {
         return $this->transactionFlow;
     }
