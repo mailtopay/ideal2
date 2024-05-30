@@ -6,6 +6,7 @@ use DateInterval;
 use Exception;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use POM\iDEAL\Exceptions\IDEALException;
@@ -56,6 +57,8 @@ readonly class AccessTokenRequest
 
         try {
             $response = $client->send($request, $options);
+        } catch (BadResponseException $e) {
+            throw new IDEALException("Failed retrieving access token from ING: HTTP {$e->getResponse()->getStatusCode()} response: {$e->getResponse()->getBody()->getContents()}");
         } catch (GuzzleException $e) {
             throw new IDEALException("Failed retrieving access token from ING: {$e->getMessage()}");
         }

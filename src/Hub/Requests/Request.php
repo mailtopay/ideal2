@@ -5,6 +5,7 @@ namespace POM\iDEAL\Hub\Requests;
 use Exception;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Helpers\DerConverter;
@@ -111,6 +112,8 @@ class Request
 
         try {
             $response = $this->client->send($request, $this->options);
+        } catch (BadResponseException $e) {
+            throw new IDEALException("Hub request failed: HTTP {$e->getResponse()->getStatusCode()} response: {$e->getResponse()->getBody()->getContents()}");
         } catch (GuzzleException $e) {
             throw new IDEALException("Hub request failed: {$e->getMessage()}");
         }

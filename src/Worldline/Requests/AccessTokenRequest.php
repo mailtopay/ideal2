@@ -5,6 +5,7 @@ namespace POM\iDEAL\Worldline\Requests;
 use DateInterval;
 use DateTime;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use POM\iDEAL\Exceptions\IDEALException;
@@ -50,6 +51,8 @@ readonly class AccessTokenRequest
 
         try {
             $response = $client->send($request, $options);
+        } catch (BadResponseException $e) {
+            throw new IDEALException("Access token request failed: HTTP {$e->getResponse()->getStatusCode()} response: {$e->getResponse()->getBody()->getContents()}");
         } catch (GuzzleException $e) {
             throw new IDEALException('Access token request failed: ' . $e->getMessage());
         }
