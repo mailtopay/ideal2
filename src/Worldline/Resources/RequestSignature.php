@@ -40,7 +40,7 @@ class RequestSignature
 
         // dont include the digest header for empty body
         if (!empty($body)) {
-            $headers['digest'] = 'SHA-256='.base64_encode(hash('sha256', json_encode($body), true));
+            $headers['digest'] = 'SHA-256='.base64_encode(hash('sha256', json_encode($body, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), true));
         }
 
         $headers = array_merge($this->headers, $headers);
