@@ -75,7 +75,7 @@ class Request
 
         // dont include the digest header for empty body
         if (!empty($body)) {
-            $headers['Digest'] = 'SHA-256='.base64_encode(hash('sha256', json_encode($this->body), true));
+            $headers['Digest'] = 'SHA-256='.base64_encode(hash('sha256', $body, true));
         }
 
         $request = new \GuzzleHttp\Psr7\Request(
