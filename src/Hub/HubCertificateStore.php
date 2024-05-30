@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Firebase\JWT\Key;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use POM\iDEAL\Exceptions\IDEALException;
@@ -81,7 +82,9 @@ readonly class HubCertificateStore
 
         try {
             $response = $client->send($request);
-        } catch (GuzzleException $e) {
+        } catch (BadResponseException $e) {
+            throw new IDEALException("Hub request failed: HTTP {$e->getResponse()->getStatusCode()} response: {$e->getResponse()->getBody()->getContents()}");
+        }  catch (GuzzleException $e) {
             throw new IDEALException("Hub request failed: {$e->getMessage()}");
         }
 

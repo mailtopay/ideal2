@@ -4,6 +4,7 @@ namespace POM\iDEAL\Worldline\Requests;
 
 use DateTime;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use POM\iDEAL\Exceptions\IDEALException;
 use POM\iDEAL\Worldline\iDEAL;
@@ -87,6 +88,8 @@ class Request
 
         try {
             $response = $this->client->send($request);
+        } catch (BadResponseException $e) {
+            throw new IDEALException("Could not send request: HTTP {$e->getResponse()->getStatusCode()} response: {$e->getResponse()->getBody()->getContents()}");
         } catch (GuzzleException $e) {
             throw new IDEALException('Could not send request: ' . $e->getMessage());
         }
