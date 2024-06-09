@@ -17,6 +17,7 @@ class BankFactory
             'bnp' => new BNP(),
             'db' => new DB(),
             'ing' => new ING(),
+            'ingsandbox' => new INGSandbox(),
             'rabo' => new RABO(),
             'worldline' => new Worldline(),
         };
