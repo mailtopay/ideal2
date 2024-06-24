@@ -31,7 +31,7 @@ readonly class iDEAL
     public function retrieveAccessToken(): AccessToken
     {
         $cache      = $this->config->getCache();
-        $cacheKey   = $this->config->getCachePrefix() . 'accessToken.'.$this->config->getMerchantId();
+        $cacheKey   = $this->config->getCachePrefix() . '.accessToken.'.get_class($this->config->getBank()).'.'.$this->config->getMerchantId();
         $accessTokenCache = $cache->get($cacheKey);
 
         if (!empty($accessTokenCache)) {
