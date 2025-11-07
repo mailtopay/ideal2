@@ -18,6 +18,9 @@ readonly class Transaction
         private int $amount,
         private ?string $redirectUrl,
         private TransactionStatus $status,
+        private ?string $iban,
+        private ?string $bic,
+        private ?string $accountOwner,
     ) {
     }
 
@@ -87,6 +90,30 @@ readonly class Transaction
         return $this->redirectUrl;
     }
 
+    /**
+     * @return ?string
+     */
+    public function getIban(): ?string
+    {
+        return $this->iban;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getBic(): ?string
+    {
+        return $this->bic;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getAccountOwner(): ?string
+    {
+        return $this->accountOwner;
+    }
+
     public static function fromArray(array $data): self
     {
         return new self(
@@ -100,6 +127,9 @@ readonly class Transaction
             $data['amount']['amount'],
             $data['links']['redirectUrl']['href'] ?? null,
             TransactionStatus::from($data['status'] ?? 'OPEN'),
+            isset($data['debtor']) ? $data['debtor']['iban'] ?? null : null,
+            isset($data['debtor']) ? $data['debtor']['bic'] ?? null : null,
+            isset($data['debtor']) ? $data['debtor']['name'] ?? null : null,
         );
     }
 
