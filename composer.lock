@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd29932016b8595cc65f629644549ed7",
+    "content-hash": "b405892769788a615e93f7981f7d9edb",
     "packages": [
         {
             "name": "brick/math",
@@ -63,16 +63,16 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v7.0.0",
+            "version": "v7.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "c03036fd5dbd530a95406ca3b5f6d7b24eaa3910"
+                "reference": "5645b43af647b6947daac1d0f659dd1fbe8d3b65"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/c03036fd5dbd530a95406ca3b5f6d7b24eaa3910",
-                "reference": "c03036fd5dbd530a95406ca3b5f6d7b24eaa3910",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/5645b43af647b6947daac1d0f659dd1fbe8d3b65",
+                "reference": "5645b43af647b6947daac1d0f659dd1fbe8d3b65",
                 "shasum": ""
             },
             "require": {
@@ -120,9 +120,9 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v7.0.0"
+                "source": "https://github.com/firebase/php-jwt/tree/v7.0.2"
             },
-            "time": "2025-12-15T19:26:43+00:00"
+            "time": "2025-12-16T22:17:28+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
