@@ -21,7 +21,7 @@ final class TransactionRequest extends Request
      * @return Transaction
      * @throws IDEALException
      */
-    public function execute(int $amount, string $description, string $reference, string $returnUrl, string $callbackUrl = null): Transaction
+    public function execute(int $amount, string $description, string $reference, string $returnUrl, ?string $callbackUrl = null): Transaction
     {
         $this->body = [
             'amount' => [

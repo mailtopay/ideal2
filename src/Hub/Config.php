@@ -50,7 +50,7 @@ readonly class Config
         private string $hubSigningPassphrase,
         private SigningAlgorithm $signingAlgorithm,
         private CacheInterface $cache,
-        string $cachePrefix = null,
+        ?string $cachePrefix = null,
     ) {
         if ($this->testMode) {
             $this->hubBaseUrl = 'https://merchant-cpsp-mtls.ext.idealapi.nl';

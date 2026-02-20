@@ -123,7 +123,7 @@ readonly final class iDEAL
      * @param array|null $headers
      * @return bool
      */
-    public function verifyCallbackResponse(string $callbackResponse, array $headers = null): bool
+    public function verifyCallbackResponse(string $callbackResponse, ?array $headers = null): bool
     {
         if (is_null($headers)) {
             $requestId  = $_SERVER['HTTP_REQUEST_ID'] ?? '';

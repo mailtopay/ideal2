@@ -24,9 +24,9 @@ readonly class AccessToken
     }
 
     /**
-     * @return DateInterval
+     * @return DateInterval|null
      */
-    public function getExpire(): DateInterval
+    public function getExpire(): ?DateInterval
     {
         return $this->expire;
     }

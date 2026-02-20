@@ -66,7 +66,7 @@ readonly class iDEAL
         );
     }
 
-    public function verifyCallbackResponse(string $callbackResponse, array $headers = null): bool
+    public function verifyCallbackResponse(string $callbackResponse, ?array $headers = null): bool
     {
         // Decode the JSON string
         $data = json_decode($callbackResponse);
@@ -77,10 +77,10 @@ readonly class iDEAL
 
         // get headers
         if (is_null($headers)) {
-            $digest     = $_SERVER['HTTP_DIGEST'];
-            $signature  = $_SERVER['HTTP_SIGNATURE'];
-            $requestId  = $_SERVER['HTTP_X_REQUEST_ID'];
-            $dateTime   = $_SERVER['HTTP_MESSAGECREATEDATETIME'];
+            $digest     = $_SERVER['HTTP_DIGEST'] ?? '';
+            $signature  = $_SERVER['HTTP_SIGNATURE'] ?? '';
+            $requestId  = $_SERVER['HTTP_X_REQUEST_ID'] ?? '';
+            $dateTime   = $_SERVER['HTTP_MESSAGECREATEDATETIME'] ?? '';
         } else {
             $digest     = $headers['HTTP_DIGEST'];
             $signature  = $headers['HTTP_SIGNATURE'];
